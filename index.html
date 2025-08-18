@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asiatensor Executive Brief</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Source Serif Pro', serif; }
+        .collapsible-content { 
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .collapsible-icon { 
+            transition: transform 0.3s ease;
+        }
+        .collapsible-icon.rotate-180 { 
+            transform: rotate(180deg);
+        }
+        /* Professional bento box styling */
+        .bento-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .bento-box:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+        }
+        .metric-value {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        /* Theme overrides */
+        .dark .bg-white { background-color: #000000; }
+        .dark .text-gray-800 { color: #e5e7eb; }
+        
+        /* Light mode bento boxes */
+        .bento-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .dark .bento-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-800 font-sans dark:bg-black dark:text-gray-300">
+
+    <!-- HEADER: The Control Deck -->
+    <header class="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+        <div class="text-xl font-serif font-bold text-gray-900 dark:text-slate-50">
+            <span class="font-mono mr-2 text-blue-600 dark:text-blue-400">τ</span>Asiatensor
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle-btn" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+            
+            <!-- Language Switcher -->
+            <div id="language-switcher" class="flex space-x-1 text-sm font-medium">
+                <button class="lang-btn px-3 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="en">EN</button>
+                <button class="lang-btn px-3 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="zh-cn">中文</button>
+                <button class="lang-btn px-3 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="ja">日本語</button>
+                <button class="lang-btn px-3 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="ko">한국어</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24 px-4 md:px-8">
+        <div class="max-w-4xl mx-auto space-y-16">
+            
+            <!-- SECTION 1: THE HOOK (Executive Summary & Bento Grid) -->
+            <section id="summary">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-slate-50 mb-4" data-i18n="summary.title">
+                        Asiatensor Executive Brief
+                    </h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-400" data-i18n="summary.subtitle">
+                        Capitalizing on Asia's Historic AI Investment Opportunity
+                    </p>
+                </div>
+                
+                <!-- THE BENTO BOX GRID -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Box 1: Funding Ask -->
+                    <div class="bento-box rounded-xl p-6 text-center">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2" data-i18n="summary.funding_ask_label">Round 1 Funding Target</div>
+                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value" data-i18n="summary.funding_ask_value">$7M-$8M</div>
+                    </div>
+                    
+                    <!-- Box 2: Target Market Cap -->
+                    <div class="bento-box rounded-xl p-6 text-center">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2" data-i18n="summary.market_cap_label">Target Market Cap</div>
+                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value" data-i18n="summary.market_cap_value">$279M</div>
+                    </div>
+                    
+                    <!-- Box 3: Projected Annual Profit -->
+                    <div class="bento-box rounded-xl p-6 text-center">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2" data-i18n="summary.annual_profit_label">Projected Annual Profit</div>
+                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value" data-i18n="summary.annual_profit_value">~$89.6M</div>
+                    </div>
+                    
+                    <!-- Box 4: Projected Daily Volume -->
+                    <div class="bento-box rounded-xl p-6 text-center">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2" data-i18n="summary.daily_volume_label">Projected Daily Volume</div>
+                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value" data-i18n="summary.daily_volume_value">$1.5M-$4.5M</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: THE OPPORTUNITY (Collapsible Card) -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 collapsible hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer collapsible-trigger">
+                    <div>
+                        <h2 class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50" data-i18n="opportunity.title">
+                            The Great Disconnect: Asia's Historic Opportunity
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2" data-i18n="opportunity.summary">
+                            Asia is the undisputed epicenter of Web3, yet TAO remains largely unknown. This presents a historic arbitrage opportunity.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform collapsible-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="collapsible-content hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <p data-i18n="opportunity.para1">
+                            Asia represents 60% of global crypto adoption and houses the world's most sophisticated DeFi protocols, yet TAO remains largely unknown outside technical circles. While Western markets debate AI regulation, Asian entrepreneurs are building the future.
+                        </p>
+                        <p data-i18n="opportunity.para2">
+                            Our market intelligence reveals a critical window: institutional capital is seeking exposure to decentralized AI, but lacks the infrastructure and expertise to access this emerging asset class safely and efficiently.
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg mt-6">
+                            <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-2">Key Market Facts</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Asia accounts for over 60% of global crypto trading volume</li>
+                                <li>• TAO not listed on major Asian exchanges (Upbit, Bithumb, bitFlyer)</li>
+                                <li>• Regulatory frameworks developing in Singapore, Hong Kong, Japan</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: DUAL-ENGINE PROFIT MODEL (Collapsible Card) -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 collapsible hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer collapsible-trigger">
+                    <div>
+                        <h2 class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50" data-i18n="strategy.title">
+                            Our Dual-Engine Profit Model
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2" data-i18n="strategy.summary">
+                            Combining subnet operations and validator nodes to maximize TAO generation and market positioning in Asia.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform collapsible-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="collapsible-content hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <h4 class="text-green-600 dark:text-green-400">Engine 1: Subnet Operations</h4>
+                        <p>Deploy specialized AI subnets targeting Asian market needs. Focus on language processing, trading algorithms, and regulatory compliance automation.</p>
+                        
+                        <h4 class="text-blue-600 dark:text-blue-400">Engine 2: Validator Network</h4>
+                        <p>Establish validator nodes across strategic Asian jurisdictions to maximize TAO rewards while ensuring regulatory compliance.</p>
+                        
+                        <h4 class="text-purple-600 dark:text-purple-400">Market Positioning</h4>
+                        <p>Become the premier gateway for Asian institutional access to Bittensor ecosystem, leveraging first-mover advantage.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: FINANCIAL PROJECTIONS (Collapsible Card) -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 collapsible hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer collapsible-trigger">
+                    <div>
+                        <h2 class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50" data-i18n="financials.title">
+                            TAO Production & Revenue Model
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2" data-i18n="financials.summary">
+                            Annual production of ~112,000 TAO, generating approximately $89.6M in annual profit under base case scenario.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform collapsible-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="collapsible-content hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">TAO Production Metrics</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Annual TAO Output</span>
+                                        <span class="text-blue-600 dark:text-blue-400 font-semibold">~112,000</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Conservative Scenario (14x ROI)</span>
+                                        <span class="text-green-600 dark:text-green-400">$58.8M</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Base Case Scenario (28x ROI)</span>
+                                        <span class="text-green-600 dark:text-green-400">$89.6M</span>
+                                    </div>
+                                    <div class="border-t border-gray-300 dark:border-gray-600 pt-2 flex justify-between font-semibold">
+                                        <span>Target Market Cap</span>
+                                        <span class="text-blue-600 dark:text-blue-400">$279M</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="text-purple-600 dark:text-purple-400 font-semibold mb-3">Timeline & Milestones</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Round 1 Completion</span>
+                                        <span>Q1 2025</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Subnet Deployment</span>
+                                        <span>Q2 2025</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Full Production</span>
+                                        <span>Q3 2025</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Target Achievement</span>
+                                        <span class="text-purple-600 dark:text-purple-400">Within 2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: TEAM & EXPERTISE (Collapsible Card) -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 collapsible hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer collapsible-trigger">
+                    <div>
+                        <h2 class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50" data-i18n="roadmap.title">
+                            Execution Team & Strategic Advantages
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2" data-i18n="roadmap.summary">
+                            Among the few global experts with complete Bittensor expertise and established government relationships across Japan.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform collapsible-icon text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="collapsible-content hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="text-center bg-gray-50 dark:bg-gray-800/30 p-4 rounded-lg">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">AI</span>
+                                </div>
+                                <h5 class="font-semibold">Bittensor Expertise</h5>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Complete ecosystem mastery</p>
+                            </div>
+                            <div class="text-center bg-gray-50 dark:bg-gray-800/30 p-4 rounded-lg">
+                                <div class="w-12 h-12 bg-green-600 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">GOV</span>
+                                </div>
+                                <h5 class="font-semibold">Government Relations</h5>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Multi-region partnerships</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                            <h4 class="text-orange-600 dark:text-orange-400 font-semibold mb-3">Strategic Advantages</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>Exclusive Bittensor technical expertise in Asian markets</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>Established relationships with Japanese government entities</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>First-mover advantage in regulatory-compliant TAO operations</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>Deep understanding of Asian institutional investment patterns</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 mt-12 text-gray-500 dark:text-gray-600 border-t border-gray-200 dark:border-gray-800">
+        <p>&copy; 2025 Asiatensor. All Rights Reserved. Confidential and Proprietary.</p>
+    </footer>
+
+    <!-- Include content and scripts -->
+    <script src="assets/content.js"></script>
+    <script src="assets/script.js"></script>
+</body>
+</html>
