@@ -153,7 +153,7 @@ class ScrollspyManager {
         });
 
         // Add scroll listener
-        window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 100));
+        window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 50));
         
         // Add click listeners
         this.sections.forEach(section => {
@@ -163,8 +163,11 @@ class ScrollspyManager {
             }
         });
 
-        // Set initial active state
-        this.handleScroll();
+        // Set initial active state after a brief delay to ensure DOM is ready
+        setTimeout(() => {
+            this.handleScroll();
+            console.log('🎯 Scrollspy navigation initialized and active state set');
+        }, 100);
     }
 
     throttle(func, limit) {
@@ -179,48 +182,58 @@ class ScrollspyManager {
     }
 
     handleScroll() {
-        const scrollPosition = window.scrollY + window.innerHeight / 2;
+        const scrollTop = window.scrollY;
+        const viewportHeight = window.innerHeight;
+        const triggerPoint = scrollTop + viewportHeight * 0.3; // 30% from top of viewport
+        
         let activeSection = null;
+        let maxVisibility = 0;
 
-        // Find the section currently in view
-        for (const section of this.sections) {
+        // Find the section with maximum visibility
+        this.sections.forEach(section => {
             const element = document.getElementById(section);
             if (element) {
                 const rect = element.getBoundingClientRect();
-                const elementTop = window.scrollY + rect.top;
+                const elementTop = scrollTop + rect.top;
                 const elementBottom = elementTop + rect.height;
-
-                if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
+                
+                // Calculate how much of the section is visible
+                const visibleTop = Math.max(scrollTop, elementTop);
+                const visibleBottom = Math.min(scrollTop + viewportHeight, elementBottom);
+                const visibility = Math.max(0, visibleBottom - visibleTop) / rect.height;
+                
+                // Also check if the section crosses the trigger point
+                const crossesTrigger = elementTop <= triggerPoint && elementBottom >= triggerPoint;
+                
+                if (crossesTrigger && visibility > maxVisibility) {
+                    maxVisibility = visibility;
                     activeSection = section;
-                    break;
                 }
             }
-        }
+        });
 
-        // If no section is active, find the closest one
+        // Fallback: if no section crosses trigger point, find the closest one
         if (!activeSection) {
-            let closestSection = null;
             let minDistance = Infinity;
-
+            
             this.sections.forEach(section => {
                 const element = document.getElementById(section);
                 if (element) {
                     const rect = element.getBoundingClientRect();
-                    const elementCenter = window.scrollY + rect.top + rect.height / 2;
-                    const distance = Math.abs(scrollPosition - elementCenter);
-
+                    const elementTop = scrollTop + rect.top;
+                    const distance = Math.abs(triggerPoint - elementTop);
+                    
                     if (distance < minDistance) {
                         minDistance = distance;
-                        closestSection = section;
+                        activeSection = section;
                     }
                 }
             });
-
-            activeSection = closestSection;
         }
 
         // Update active states
         this.updateActiveState(activeSection);
+        
     }
 
     updateActiveState(activeSection) {
