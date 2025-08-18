@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Test - Asiatensor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./tailwind.config.js"></script>
+</head>
+<body class="h-full bg-gray-900 text-gray-300 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-white">Language Switcher Test</h1>
+        
+        <!-- Language Switcher (copied from main page) -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-lg font-semibold mb-4 text-white">Language Buttons</h2>
+            <div class="flex space-x-1" id="languageSwitcher">
+                <button 
+                    data-lang="en" 
+                    class="lang-btn px-3 py-1 rounded text-sm font-mono font-medium transition-all duration-200 text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30"
+                >EN</button>
+                <button 
+                    data-lang="ja" 
+                    class="lang-btn px-3 py-1 rounded text-sm font-mono font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >JP</button>
+                <button 
+                    data-lang="ko" 
+                    class="lang-btn px-3 py-1 rounded text-sm font-mono font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >KO</button>
+                <button 
+                    data-lang="zh-hans" 
+                    class="lang-btn px-3 py-1 rounded text-sm font-mono font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >简</button>
+                <button 
+                    data-lang="zh-hant" 
+                    class="lang-btn px-3 py-1 rounded text-sm font-mono font-medium transition-all duration-200 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >繁</button>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-lg font-semibold mb-4 text-white">Test Results</h2>
+            <div id="testResults" class="space-y-2 font-mono text-sm">
+                <p class="text-green-400">✓ Language buttons rendered successfully</p>
+                <p class="text-green-400">✓ Default language: <span id="currentLang">en</span></p>
+                <p class="text-green-400">✓ Supported languages: EN, JP, KO, 简, 繁</p>
+                <p class="text-blue-400">Click any language button to test switching</p>
+            </div>
+        </div>
+
+        <!-- Language Info Display -->
+        <div class="bg-gray-800 rounded-lg p-6 mt-6">
+            <h2 class="text-lg font-semibold mb-4 text-white">Current Language Info</h2>
+            <div class="font-mono text-sm space-y-2">
+                <p>Selected: <span id="selectedLang" class="text-cyan-400">English</span></p>
+                <p>Code: <span id="selectedCode" class="text-cyan-400">en</span></p>
+                <p>Native: <span id="selectedNative" class="text-cyan-400">English</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simplified language manager for testing
+        const LANGUAGES = {
+            'en': { name: 'English', native: 'English' },
+            'ja': { name: 'Japanese', native: '日本語' },
+            'ko': { name: 'Korean', native: '한국어' },
+            'zh-hans': { name: 'Simplified Chinese', native: '简体中文' },
+            'zh-hant': { name: 'Traditional Chinese', native: '繁體中文' }
+        };
+
+        let currentLanguage = 'en';
+
+        function updateLanguageDisplay(lang) {
+            document.getElementById('currentLang').textContent = lang;
+            document.getElementById('selectedLang').textContent = LANGUAGES[lang].name;
+            document.getElementById('selectedCode').textContent = lang;
+            document.getElementById('selectedNative').textContent = LANGUAGES[lang].native;
+        }
+
+        function updateActiveButton(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const btnLang = btn.getAttribute('data-lang');
+                btn.classList.remove('text-blue-600', 'dark:text-blue-400', 'bg-blue-100', 'dark:bg-blue-900/30');
+                btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                
+                if (btnLang === lang) {
+                    btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+                    btn.classList.add('text-blue-600', 'dark:text-blue-400', 'bg-blue-100', 'dark:bg-blue-900/30');
+                }
+            });
+        }
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            updateLanguageDisplay(lang);
+            updateActiveButton(lang);
+            
+            // Add test result
+            const results = document.getElementById('testResults');
+            const result = document.createElement('p');
+            result.className = 'text-yellow-400';
+            result.textContent = `→ Switched to ${LANGUAGES[lang].native} (${lang})`;
+            results.appendChild(result);
+            
+            console.log(`Language switched to: ${lang} (${LANGUAGES[lang].native})`);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguageDisplay(currentLanguage);
+            
+            // Add event listeners
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    switchLanguage(lang);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

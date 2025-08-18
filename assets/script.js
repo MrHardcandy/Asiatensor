@@ -747,6 +747,8 @@ class ModalManager {
 class AsiatensorApp {
     constructor() {
         this.auth = new AuthenticationManager();
+        
+        // Always initialize theme (works on both pages)
         this.theme = new ThemeManager();
         
         // Only initialize on main page (not login)
@@ -786,12 +788,106 @@ class AsiatensorApp {
 }
 
 // ==========================================
+// HELPER FUNCTIONS
+// ==========================================
+
+// Helper function for nested content access
+function getNestedContent(obj, path, language) {
+    const keys = path.split('.');
+    let current = obj;
+    
+    for (const key of keys) {
+        if (current && current[key]) {
+            current = current[key];
+        } else {
+            return null;
+        }
+    }
+    
+    return current && current[language] ? current[language] : null;
+}
+
+// ==========================================
 // INITIALIZATION
 // ==========================================
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing...');
+    
+    // Make sure content is available globally
+    if (typeof ASIATENSOR_CONTENT !== 'undefined') {
+        window.ASIATENSOR_CONTENT = ASIATENSOR_CONTENT;
+        console.log('✅ Content loaded');
+    } else {
+        console.warn('⚠️ ASIATENSOR_CONTENT not found');
+    }
+    
+    // Check if we have the required elements
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const langBtns = document.querySelectorAll('.lang-btn');
+    console.log('Theme button found:', !!themeBtn);
+    console.log('Language buttons found:', langBtns.length);
+    
     window.asiatensorApp = new AsiatensorApp();
+    
+    // Backup event binding in case class binding fails
+    setTimeout(() => {
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        if (themeBtn && !themeBtn.hasAttribute('data-bound')) {
+            console.log('🔧 Adding backup theme toggle binding');
+            themeBtn.setAttribute('data-bound', 'true');
+            themeBtn.addEventListener('click', () => {
+                const html = document.documentElement;
+                const isDark = html.classList.contains('dark');
+                if (isDark) {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    localStorage.setItem('asiatensor-theme', 'light');
+                } else {
+                    html.classList.add('dark');
+                    html.classList.remove('light');
+                    localStorage.setItem('asiatensor-theme', 'dark');
+                }
+                console.log('Theme toggled via backup binding');
+            });
+        }
+        
+        const langBtns = document.querySelectorAll('.lang-btn');
+        langBtns.forEach(btn => {
+            if (!btn.hasAttribute('data-bound')) {
+                console.log('🔧 Adding backup language binding for', btn.getAttribute('data-lang'));
+                btn.setAttribute('data-bound', 'true');
+                btn.addEventListener('click', () => {
+                    const lang = btn.getAttribute('data-lang');
+                    console.log('Language clicked via backup binding:', lang);
+                    // Simple language switch logic
+                    if (window.ASIATENSOR_CONTENT) {
+                        const elements = document.querySelectorAll('[data-i18n]');
+                        elements.forEach(el => {
+                            const key = el.getAttribute('data-i18n');
+                            const content = getNestedContent(window.ASIATENSOR_CONTENT, key, lang);
+                            if (content) {
+                                el.textContent = content;
+                            }
+                        });
+                        
+                        // Update button states
+                        const allLangBtns = document.querySelectorAll('.lang-btn');
+                        allLangBtns.forEach(b => {
+                            b.classList.remove('text-white', 'bg-gray-700');
+                            b.classList.add('text-gray-600', 'dark:text-gray-400');
+                        });
+                        btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+                        btn.classList.add('text-white', 'bg-gray-700');
+                        
+                        localStorage.setItem('asiatensor-language', lang);
+                    }
+                });
+            }
+        });
+    }, 100);
+    
     console.info('✅ Executive Brief System Initialized');
 });
 
