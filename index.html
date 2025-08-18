@@ -52,6 +52,25 @@
         
         #pip-modal {
             backdrop-filter: blur(8px);
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #pip-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        #pip-modal:not(.hidden) {
+            opacity: 1;
+        }
+        
+        #pip-modal .bg-white {
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #pip-modal:not(.hidden) .bg-white {
+            transform: scale(1);
         }
         
         #pip-modal .animate-spin {
@@ -61,6 +80,39 @@
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+        
+        /* Custom scrollbar styles for Webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(156, 163, 175, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 4px;
+            transition: background 0.2s ease;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.6);
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: rgba(75, 85, 99, 0.1);
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: rgba(75, 85, 99, 0.4);
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: rgba(75, 85, 99, 0.6);
         }
         .bento-box {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
