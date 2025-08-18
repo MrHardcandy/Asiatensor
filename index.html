@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asiatensor Executive Brief - Working Version</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -32,6 +33,34 @@
         }
         .collapsible-icon.rotate-180 { 
             transform: rotate(180deg);
+        }
+        
+        /* Picture-in-Picture Modal Styles */
+        .company-link, .tao-link {
+            display: inline;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            font: inherit;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .company-link:hover, .tao-link:hover {
+            text-decoration: none;
+        }
+        
+        #pip-modal {
+            backdrop-filter: blur(8px);
+        }
+        
+        #pip-modal .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         .bento-box {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
@@ -65,8 +94,9 @@
 
     <!-- HEADER -->
     <header class="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-        <div class="text-xl font-serif font-bold text-gray-900 dark:text-slate-50">
-            <span class="font-mono mr-2 text-blue-600 dark:text-blue-400">τ</span>Asiatensor
+        <div class="flex items-center space-x-3">
+            <img src="./assets/logo-at.svg" alt="Asiatensor Logo" class="w-10 h-10">
+            <span class="text-xl font-serif font-bold text-gray-900 dark:text-slate-50">Asiatensor</span>
         </div>
         <div class="flex items-center space-x-4">
             <!-- Theme Toggle -->
