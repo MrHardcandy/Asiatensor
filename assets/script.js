@@ -1,10 +1,11 @@
 /**
- * Asiatensor Executive Brief - Main Application
- * Optimized with asynchronous language loading and enhanced UX
+ * Asiatensor Executive Brief - Enhanced Interactive Experience
+ * With Async Language Loading, Scrollspy Navigation, Print Functionality
+ * and Advanced UI/UX Micro-refinements
  */
 
 // ==========================================
-// CONFIGURATION
+// CONFIGURATION & CONSTANTS
 // ==========================================
 
 const APP_CONFIG = {
@@ -25,6 +26,227 @@ const APP_CONFIG = {
     },
     LOCALES_PATH: './assets/locales/'
 };
+
+// ==========================================
+// ENHANCED LANGUAGE LOADER WITH LOADING STATES
+// ==========================================
+
+class LanguageLoader {
+    constructor() {
+        this.cache = new Map();
+        this.currentLanguage = APP_CONFIG.DEFAULT_LANGUAGE;
+        this.loadingSpinner = document.getElementById('loading-spinner');
+        this.mainContent = document.getElementById('main-content');
+    }
+
+    showLoading() {
+        this.mainContent.classList.add('content-loading');
+        this.loadingSpinner.classList.remove('hidden');
+    }
+
+    hideLoading() {
+        this.mainContent.classList.remove('content-loading');
+        this.loadingSpinner.classList.add('hidden');
+    }
+
+    async loadLanguage(lang) {
+        if (this.cache.has(lang)) {
+            return this.cache.get(lang);
+        }
+        
+        this.showLoading();
+        
+        try {
+            const response = await fetch(`${APP_CONFIG.LOCALES_PATH}${lang}.json`);
+            if (!response.ok) {
+                throw new Error(`Failed to load language: ${lang}`);
+            }
+            
+            const data = await response.json();
+            this.cache.set(lang, data);
+            return data;
+        } catch (error) {
+            console.error(`Error loading language ${lang}:`, error);
+            // Fallback to English if available
+            if (lang !== 'en' && this.cache.has('en')) {
+                return this.cache.get('en');
+            }
+            throw error;
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    async switchLanguage(lang) {
+        if (!APP_CONFIG.SUPPORTED_LANGUAGES.includes(lang)) {
+            console.warn(`Unsupported language: ${lang}`);
+            return;
+        }
+
+        try {
+            const languageData = await this.loadLanguage(lang);
+            this.renderContent(languageData);
+            this.updateLanguageButtons(lang);
+            this.currentLanguage = lang;
+            
+            // Store language preference
+            localStorage.setItem(APP_CONFIG.STORAGE_KEYS.LANGUAGE, lang);
+            
+            console.log(`→ Successfully switched to ${lang}`);
+        } catch (error) {
+            console.error(`Failed to switch to language ${lang}:`, error);
+        }
+    }
+
+    renderContent(data) {
+        // Update main titles and subtitles
+        document.getElementById('main-title').textContent = data.title;
+        document.getElementById('main-subtitle').textContent = data.subtitle;
+        
+        // Update bento box labels
+        document.getElementById('funding-label').textContent = data.executive_summary.round1_funding.split(':')[0] + ':';
+        document.getElementById('market-cap-label').textContent = data.executive_summary.target_market_cap.split(':')[0] + ':';
+        document.getElementById('profit-label').textContent = data.executive_summary.projected_annual_profit.split(':')[0] + ':';
+        document.getElementById('volume-label').textContent = data.executive_summary.projected_daily_volume.split(':')[0] + ':';
+        
+        // Update section titles and summaries
+        if (data.chapter1?.section1_1?.title) {
+            document.getElementById('opportunity-title').textContent = data.chapter1.section1_1.title;
+        }
+        
+        console.log('→ Content rendered successfully');
+    }
+
+    updateLanguageButtons(activeLang) {
+        APP_CONFIG.SUPPORTED_LANGUAGES.forEach(lang => {
+            const btn = document.getElementById(`lang-${lang}`);
+            if (btn) {
+                btn.classList.remove('text-white', 'bg-gray-700');
+                btn.classList.add('text-gray-600', 'dark:text-gray-400');
+            }
+        });
+        
+        const activeBtn = document.getElementById(`lang-${activeLang}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('text-gray-600', 'dark:text-gray-400');
+            activeBtn.classList.add('text-white', 'bg-gray-700');
+        }
+    }
+}
+
+// ==========================================
+// SCROLLSPY NAVIGATION SYSTEM
+// ==========================================
+
+class ScrollspyManager {
+    constructor() {
+        this.sections = ['summary', 'opportunity', 'strategy', 'financials', 'roadmap'];
+        this.navLinks = {};
+        this.throttleTimeout = null;
+        this.init();
+    }
+
+    init() {
+        // Cache nav links
+        this.sections.forEach(section => {
+            this.navLinks[section] = document.querySelector(`#scrollspy-nav a[href="#${section}"]`);
+        });
+
+        // Add scroll listener
+        window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 100));
+        
+        // Add click listeners
+        this.sections.forEach(section => {
+            const link = this.navLinks[section];
+            if (link) {
+                link.addEventListener('click', this.handleNavClick.bind(this, section));
+            }
+        });
+
+        // Set initial active state
+        this.handleScroll();
+    }
+
+    throttle(func, limit) {
+        return () => {
+            if (!this.throttleTimeout) {
+                this.throttleTimeout = setTimeout(() => {
+                    func.apply(this, arguments);
+                    this.throttleTimeout = null;
+                }, limit);
+            }
+        };
+    }
+
+    handleScroll() {
+        const scrollPosition = window.scrollY + window.innerHeight / 2;
+        let activeSection = null;
+
+        // Find the section currently in view
+        for (const section of this.sections) {
+            const element = document.getElementById(section);
+            if (element) {
+                const rect = element.getBoundingClientRect();
+                const elementTop = window.scrollY + rect.top;
+                const elementBottom = elementTop + rect.height;
+
+                if (scrollPosition >= elementTop && scrollPosition <= elementBottom) {
+                    activeSection = section;
+                    break;
+                }
+            }
+        }
+
+        // If no section is active, find the closest one
+        if (!activeSection) {
+            let closestSection = null;
+            let minDistance = Infinity;
+
+            this.sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    const elementCenter = window.scrollY + rect.top + rect.height / 2;
+                    const distance = Math.abs(scrollPosition - elementCenter);
+
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestSection = section;
+                    }
+                }
+            });
+
+            activeSection = closestSection;
+        }
+
+        // Update active states
+        this.updateActiveState(activeSection);
+    }
+
+    updateActiveState(activeSection) {
+        // Remove active class from all links
+        Object.values(this.navLinks).forEach(link => {
+            if (link) link.classList.remove('active');
+        });
+
+        // Add active class to current section
+        if (activeSection && this.navLinks[activeSection]) {
+            this.navLinks[activeSection].classList.add('active');
+        }
+    }
+
+    handleNavClick(section, event) {
+        event.preventDefault();
+        
+        const element = document.getElementById(section);
+        if (element) {
+            element.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    }
+}
 
 // ==========================================
 // PICTURE-IN-PICTURE MODAL SYSTEM
@@ -98,932 +320,169 @@ class PictureInPictureModal {
         this.isOpen = false;
         document.body.style.overflow = '';
     }
-
-    showCompanyInfo(symbol, name) {
-        const content = `
-            <div class="space-y-6">
-                <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <h4 class="font-semibold text-gray-900 dark:text-white mb-2">公司信息 / Company Information</h4>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">股票代码 / Symbol: <span class="font-mono font-bold">${symbol}</span></p>
-                    <p class="text-sm text-gray-600 dark:text-gray-300">公司名称 / Name: ${name}</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">K线图 / Stock Chart</h4>
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
-                            <iframe 
-                                src="https://widget.finnhub.io/widgets/stocks/chart?symbol=${symbol}&watermarkColor=%23ffffff&backgroundColor=%23222222&textColor=%23ffffff"
-                                width="100%" 
-                                height="400"
-                                frameborder="0"
-                                allowtransparency="true"
-                                scrolling="no"
-                                class="w-full">
-                            </iframe>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">实时报价 / Live Quote</h4>
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                            <iframe 
-                                src="https://widget.finnhub.io/widgets/stocks/quote?symbol=${symbol}&watermarkColor=%23ffffff&backgroundColor=%23222222&textColor=%23ffffff"
-                                width="100%" 
-                                height="300"
-                                frameborder="0"
-                                allowtransparency="true"
-                                scrolling="no"
-                                class="w-full">
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    数据由 Finnhub 提供 / Data provided by Finnhub
-                </div>
-            </div>
-        `;
-        
-        this.open(`${name} (${symbol})`, content);
-    }
-
-    showTaoPrice() {
-        const content = `
-            <div class="space-y-6">
-                <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg">
-                    <h4 class="font-semibold mb-2">Bittensor (TAO) 实时价格</h4>
-                    <p class="text-sm opacity-90">去中心化AI网络的原生代币 / Native token of decentralized AI network</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">价格图表 / Price Chart</h4>
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
-                            <iframe 
-                                src="https://widget.coinmarketcap.com/widget/chart?id=22974&range=7D&theme=auto"
-                                width="100%" 
-                                height="400"
-                                frameborder="0"
-                                allowtransparency="true"
-                                scrolling="no"
-                                class="w-full">
-                            </iframe>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-semibold text-gray-900 dark:text-white mb-3">市场数据 / Market Data</h4>
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
-                            <iframe 
-                                src="https://widget.coinmarketcap.com/widget/coin?id=22974&theme=auto"
-                                width="100%" 
-                                height="300"
-                                frameborder="0"
-                                allowtransparency="true"
-                                scrolling="no"
-                                class="w-full">
-                            </iframe>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
-                    <h5 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">重要提醒 / Important Notice</h5>
-                    <p class="text-sm text-yellow-700 dark:text-yellow-300">
-                        TAO供应量将于2025年2月2日减半，这是一个重要的通缩事件，可能对价格产生重大影响。<br>
-                        <em>TAO supply will halve on February 2, 2025, which is a significant deflationary event that may have major price implications.</em>
-                    </p>
-                </div>
-                
-                <div class="text-xs text-gray-500 dark:text-gray-400 text-center">
-                    数据由 CoinMarketCap 提供 / Data provided by CoinMarketCap
-                </div>
-            </div>
-        `;
-        
-        this.open('Bittensor (TAO) 实时价格', content);
-    }
 }
 
 // ==========================================
-// CONTENT INTERACTION ENHANCEMENT
-// ==========================================
-
-class InteractiveContentManager {
-    constructor(pipModal) {
-        this.pipModal = pipModal;
-        this.companyData = {
-            'MicroStrategy': { symbol: 'MSTR', name: 'MicroStrategy Inc.' },
-            'MSTR': { symbol: 'MSTR', name: 'MicroStrategy Inc.' },
-            'Tesla': { symbol: 'TSLA', name: 'Tesla Inc.' },
-            'TSLA': { symbol: 'TSLA', name: 'Tesla Inc.' },
-            'Block': { symbol: 'SQ', name: 'Block Inc.' },
-            'Coinbase': { symbol: 'COIN', name: 'Coinbase Global Inc.' },
-            'COIN': { symbol: 'COIN', name: 'Coinbase Global Inc.' },
-            'Marathon Digital': { symbol: 'MARA', name: 'Marathon Digital Holdings' },
-            'MARA': { symbol: 'MARA', name: 'Marathon Digital Holdings' },
-            'TAO Synergies': { symbol: 'TAOX', name: 'TAO Synergies Inc.' },
-            'TAOX': { symbol: 'TAOX', name: 'TAO Synergies Inc.' },
-            'Metaplanet': { symbol: '3350.T', name: 'Metaplanet Inc.' },
-            '3350.T': { symbol: '3350.T', name: 'Metaplanet Inc.' },
-            'Wemade': { symbol: '112040.KS', name: 'Wemade Co Ltd' },
-            'Oblong': { symbol: 'OBLG', name: 'Oblong Inc.' },
-            'OBLG': { symbol: 'OBLG', name: 'Oblong Inc.' },
-            'Safello': { symbol: 'SFL.ST', name: 'Safello AB' }
-        };
-    }
-
-    enhanceContent() {
-        this.addCompanyLinks();
-        this.addTaoLinks();
-    }
-
-    addCompanyLinks() {
-        // Find company mentions in content
-        const contentSelectors = [
-            '.collapsible-content',
-            '[id^="content-"]',
-            'p', 'div', 'span'
-        ];
-
-        contentSelectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-                if (element.dataset.enhanced) return;
-                
-                let html = element.innerHTML;
-                let hasChanges = false;
-
-                // Replace company names with clickable links
-                Object.keys(this.companyData).forEach(companyName => {
-                    const company = this.companyData[companyName];
-                    const regex = new RegExp(`\\b${companyName}\\b`, 'gi');
-                    
-                    if (regex.test(html) && !html.includes(`data-company="${company.symbol}"`)) {
-                        html = html.replace(regex, `<button class="company-link text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline transition-colors cursor-pointer" data-company="${company.symbol}" data-name="${company.name}">$&</button>`);
-                        hasChanges = true;
-                    }
-                });
-
-                if (hasChanges) {
-                    element.innerHTML = html;
-                    element.dataset.enhanced = 'true';
-                }
-            });
-        });
-
-        // Bind click events to company links
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('company-link')) {
-                const symbol = e.target.dataset.company;
-                const name = e.target.dataset.name;
-                this.pipModal.showCompanyInfo(symbol, name);
-            }
-        });
-    }
-
-    addTaoLinks() {
-        const contentSelectors = [
-            '.collapsible-content',
-            '[id^="content-"]',
-            'p', 'div', 'span'
-        ];
-
-        contentSelectors.forEach(selector => {
-            const elements = document.querySelectorAll(selector);
-            elements.forEach(element => {
-                if (element.dataset.taoEnhanced) return;
-                
-                let html = element.innerHTML;
-                let hasChanges = false;
-
-                // Replace TAO price mentions with clickable links
-                const taoRegex = /\b(TAO|\$TAO|Bittensor|TAO价格|TAO\s*价格|TAO\s*\$\d+|\$\d+\s*TAO)\b/gi;
-                
-                if (taoRegex.test(html) && !html.includes('class="tao-link"')) {
-                    html = html.replace(taoRegex, '<button class="tao-link text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline transition-colors cursor-pointer font-semibold">$&</button>');
-                    hasChanges = true;
-                }
-
-                if (hasChanges) {
-                    element.innerHTML = html;
-                    element.dataset.taoEnhanced = 'true';
-                }
-            });
-        });
-
-        // Bind click events to TAO links
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('tao-link')) {
-                this.pipModal.showTaoPrice();
-            }
-        });
-    }
-}
-
-// ==========================================
-// LANGUAGE LOADING SYSTEM
-// ==========================================
-
-class LanguageLoader {
-    constructor() {
-        this.cache = new Map();
-        this.currentLanguage = this.getSavedLanguage();
-        this.isLoading = false;
-    }
-
-    getSavedLanguage() {
-        const saved = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.LANGUAGE);
-        if (saved && APP_CONFIG.SUPPORTED_LANGUAGES.includes(saved)) {
-            return saved;
-        }
-        
-        // Detect browser language
-        const browserLang = navigator.language || navigator.userLanguage;
-        if (browserLang) {
-            const langCode = this.mapBrowserLanguage(browserLang.toLowerCase());
-            if (APP_CONFIG.SUPPORTED_LANGUAGES.includes(langCode)) {
-                return langCode;
-            }
-        }
-        
-        return APP_CONFIG.DEFAULT_LANGUAGE;
-    }
-
-    mapBrowserLanguage(browserLang) {
-        const langMap = {
-            'en': 'en', 'en-us': 'en', 'en-gb': 'en',
-            'ja': 'ja', 'ja-jp': 'ja',
-            'ko': 'ko', 'ko-kr': 'ko',
-            'zh': 'zh-cn', 'zh-cn': 'zh-cn',
-            'zh-tw': 'zh-hk', 'zh-hk': 'zh-hk'
-        };
-        
-        return langMap[browserLang] || langMap[browserLang.split('-')[0]] || 'en';
-    }
-
-    async loadLanguage(lang) {
-        if (this.cache.has(lang)) {
-            return this.cache.get(lang);
-        }
-
-        try {
-            console.log(`🌍 Loading language: ${lang}`);
-            const response = await fetch(`${APP_CONFIG.LOCALES_PATH}${lang}.json`);
-            
-            if (!response.ok) {
-                throw new Error(`Failed to load language ${lang}: ${response.status}`);
-            }
-            
-            const content = await response.json();
-            this.cache.set(lang, content);
-            console.log(`✅ Language loaded: ${lang}`);
-            return content;
-            
-        } catch (error) {
-            console.error(`❌ Failed to load language ${lang}:`, error);
-            // Fallback to English if available
-            if (lang !== 'en' && this.cache.has('en')) {
-                return this.cache.get('en');
-            }
-            throw error;
-        }
-    }
-
-    async switchLanguage(lang) {
-        if (!APP_CONFIG.SUPPORTED_LANGUAGES.includes(lang)) {
-            console.warn(`Unsupported language: ${lang}`);
-            return false;
-        }
-
-        if (this.isLoading) {
-            console.log('Language switch already in progress...');
-            return false;
-        }
-
-        try {
-            this.isLoading = true;
-            this.showLoadingState();
-
-            const content = await this.loadLanguage(lang);
-            
-            // Smooth transition
-            await this.animateContentChange(() => {
-                this.renderContent(content);
-                this.currentLanguage = lang;
-                localStorage.setItem(APP_CONFIG.STORAGE_KEYS.LANGUAGE, lang);
-            });
-
-            this.updateActiveLanguageButton(lang);
-            console.log(`🌍 Language switched to: ${lang}`);
-            return true;
-            
-        } catch (error) {
-            console.error('Language switch failed:', error);
-            return false;
-        } finally {
-            this.isLoading = false;
-            this.hideLoadingState();
-        }
-    }
-
-    async animateContentChange(updateCallback) {
-        const contentElements = document.querySelectorAll('[data-translatable]');
-        
-        // Fade out
-        contentElements.forEach(el => {
-            el.style.transition = 'opacity 0.2s ease-out';
-            el.style.opacity = '0.6';
-        });
-
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Update content
-        updateCallback();
-        
-        // Fade in
-        contentElements.forEach(el => {
-            el.style.opacity = '1';
-        });
-    }
-
-    showLoadingState() {
-        const indicators = document.querySelectorAll('.lang-btn');
-        indicators.forEach(btn => {
-            btn.style.opacity = '0.6';
-            btn.disabled = true;
-        });
-    }
-
-    hideLoadingState() {
-        const indicators = document.querySelectorAll('.lang-btn');
-        indicators.forEach(btn => {
-            btn.style.opacity = '1';
-            btn.disabled = false;
-        });
-    }
-
-    renderContent(content) {
-        // Update main titles
-        const titleEl = document.getElementById('main-title');
-        const subtitleEl = document.getElementById('main-subtitle');
-        if (titleEl) titleEl.textContent = content.title;
-        if (subtitleEl) subtitleEl.textContent = content.subtitle;
-        
-        // Update bento box labels
-        const updateElement = (id, value) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = value;
-        };
-        
-        updateElement('funding-label', content.funding_label);
-        updateElement('market-cap-label', content.market_cap_label);
-        updateElement('profit-label', content.profit_label);
-        updateElement('volume-label', content.volume_label);
-        
-        // Update section titles and summaries
-        updateElement('opportunity-title', content.opportunity_title);
-        updateElement('opportunity-summary', content.opportunity_summary);
-        updateElement('opportunity-para1', content.opportunity_para1);
-        updateElement('opportunity-para2', content.opportunity_para2);
-        updateElement('strategy-title', content.strategy_title);
-        updateElement('strategy-summary', content.strategy_summary);
-        updateElement('financials-title', content.financials_title);
-        updateElement('financials-summary', content.financials_summary);
-        updateElement('roadmap-title', content.roadmap_title);
-        updateElement('roadmap-summary', content.roadmap_summary);
-    }
-
-    updateActiveLanguageButton(activeLanguage) {
-        const buttons = document.querySelectorAll('.lang-btn');
-        buttons.forEach(btn => {
-            const lang = btn.getAttribute('data-lang');
-            btn.classList.remove('text-white', 'bg-gray-700');
-            btn.classList.add('text-gray-600', 'dark:text-gray-400');
-            
-            if (lang === activeLanguage) {
-                btn.classList.remove('text-gray-600', 'dark:text-gray-400');
-                btn.classList.add('text-white', 'bg-gray-700');
-            }
-        });
-    }
-}
-
-// ==========================================
-// THEME MANAGEMENT
+// THEME MANAGEMENT SYSTEM
 // ==========================================
 
 class ThemeManager {
     constructor() {
-        this.currentTheme = this.getSavedTheme();
-        this.init();
-    }
-
-    getSavedTheme() {
-        const saved = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
-        if (saved && ['light', 'dark'].includes(saved)) {
-            return saved;
-        }
-        
-        // Check system preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            return 'dark';
-        }
-        
-        return APP_CONFIG.DEFAULT_THEME;
-    }
-
-    init() {
+        this.currentTheme = this.getStoredTheme() || APP_CONFIG.DEFAULT_THEME;
         this.applyTheme(this.currentTheme);
-        this.initThemeToggle();
-        this.watchSystemTheme();
+    }
+
+    getStoredTheme() {
+        return localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME);
     }
 
     applyTheme(theme) {
         const html = document.documentElement;
-        const body = document.body;
+        const icon = document.getElementById('theme-icon')?.querySelector('path');
         
         if (theme === 'dark') {
             html.classList.add('dark');
             html.classList.remove('light');
-            body.classList.add('dark');
-            body.classList.remove('light');
+            // Moon icon
+            if (icon) {
+                icon.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
+            }
         } else {
             html.classList.remove('dark');
             html.classList.add('light');
-            body.classList.remove('dark');
-            body.classList.add('light');
+            // Sun icon
+            if (icon) {
+                icon.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
+            }
         }
         
         this.currentTheme = theme;
         localStorage.setItem(APP_CONFIG.STORAGE_KEYS.THEME, theme);
-        this.updateThemeIcon();
-        
-        // Dispatch theme change event
-        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme } }));
     }
 
-    toggleTheme() {
+    toggle() {
         const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
         this.applyTheme(newTheme);
-        this.animateThemeToggle();
-    }
-
-    initThemeToggle() {
-        const toggleButton = document.getElementById('theme-toggle-btn');
-        if (!toggleButton) return;
-
-        toggleButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.toggleTheme();
-        });
-    }
-
-    updateThemeIcon() {
-        const toggleButton = document.getElementById('theme-toggle-btn');
-        if (!toggleButton) return;
-        
-        const svg = toggleButton.querySelector('svg path');
-        if (!svg) return;
-        
-        if (this.currentTheme === 'dark') {
-            // Sun icon for light mode
-            svg.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
-        } else {
-            // Moon icon for dark mode
-            svg.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
-        }
-    }
-
-    animateThemeToggle() {
-        const toggleButton = document.getElementById('theme-toggle-btn');
-        if (toggleButton) {
-            toggleButton.style.animation = 'spin 0.4s ease-in-out';
-            setTimeout(() => {
-                toggleButton.style.animation = '';
-            }, 400);
-        }
-    }
-
-    watchSystemTheme() {
-        if (window.matchMedia) {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            mediaQuery.addEventListener('change', (e) => {
-                if (!localStorage.getItem(APP_CONFIG.STORAGE_KEYS.THEME)) {
-                    this.applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-        }
+        console.log(`→ Switched to ${newTheme.toUpperCase()} mode`);
     }
 }
 
 // ==========================================
-// INTERACTIVE ELEMENTS
+// COLLAPSIBLE CONTENT MANAGER
 // ==========================================
 
-class InteractionManager {
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        this.initCollapsibleCards();
-        this.initSmoothScrolling();
-    }
-
-    initCollapsibleCards() {
-        const triggers = document.querySelectorAll('.collapsible-trigger');
-        
-        triggers.forEach((trigger) => {
-            trigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.toggleCollapsible(trigger);
-            });
-        });
-    }
-
-    toggleCollapsible(trigger) {
+class CollapsibleManager {
+    static toggleCollapsible(trigger) {
         const content = trigger.nextElementSibling;
         const icon = trigger.querySelector('svg');
-        const section = trigger.closest('section');
-        
-        if (!content || !content.classList.contains('collapsible-content')) {
-            content = trigger.parentElement.nextElementSibling;
-        }
         
         if (content) {
-            const isHidden = content.classList.contains('hidden');
-            
-            if (isHidden) {
-                // Expand
-                content.classList.remove('hidden');
-                content.style.maxHeight = '0px';
-                content.style.opacity = '0';
-                content.style.transform = 'translateY(-10px)';
-                
-                // Trigger reflow
-                content.offsetHeight;
-                
-                content.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                content.style.maxHeight = content.scrollHeight + 'px';
-                content.style.opacity = '1';
-                content.style.transform = 'translateY(0)';
-                
-                // Clean up
-                setTimeout(() => {
-                    content.style.maxHeight = '';
-                    content.style.transition = '';
-                }, 400);
-                
-            } else {
-                // Collapse
-                content.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-                content.style.maxHeight = content.scrollHeight + 'px';
-                content.style.opacity = '1';
-                
-                // Trigger reflow
-                content.offsetHeight;
-                
-                content.style.maxHeight = '0px';
-                content.style.opacity = '0';
-                content.style.transform = 'translateY(-10px)';
-                
-                setTimeout(() => {
-                    content.classList.add('hidden');
-                    content.style.transition = '';
-                    content.style.transform = '';
-                }, 300);
-            }
-            
-            // Animate icon
+            content.classList.toggle('hidden');
             if (icon) {
-                icon.style.transition = 'transform 0.3s ease';
                 icon.classList.toggle('rotate-180');
             }
-            
-            // Add subtle section highlight
-            if (section) {
-                section.style.transition = 'all 0.3s ease';
-                if (isHidden) {
-                    section.style.borderColor = 'rgba(59, 130, 246, 0.5)';
-                    section.style.backgroundColor = 'rgba(59, 130, 246, 0.02)';
-                } else {
-                    section.style.borderColor = '';
-                    section.style.backgroundColor = '';
-                }
-            }
         }
-    }
-
-    initSmoothScrolling() {
-        // Add smooth scrolling for any anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
     }
 }
 
 // ==========================================
-// AUTHENTICATION CHECK
+// PRINT FUNCTIONALITY
 // ==========================================
 
-class AuthChecker {
+class PrintManager {
     constructor() {
-        this.checkAccess();
+        this.printBtn = document.getElementById('print-btn');
+        if (this.printBtn) {
+            this.printBtn.addEventListener('click', this.handlePrint.bind(this));
+        }
     }
 
-    checkAccess() {
-        if (sessionStorage.getItem(APP_CONFIG.STORAGE_KEYS.AUTH) !== 'true') {
-            console.log('🔒 Authentication required, redirecting to login...');
-            window.location.href = 'login.html';
-            return false;
-        }
-        return true;
+    handlePrint() {
+        // Expand all collapsible content before printing
+        const collapsibleContents = document.querySelectorAll('.collapsible-content');
+        const collapsibleIcons = document.querySelectorAll('.collapsible-icon');
+        
+        // Temporarily expand all content
+        collapsibleContents.forEach(content => {
+            content.classList.remove('hidden');
+        });
+        
+        collapsibleIcons.forEach(icon => {
+            icon.classList.add('rotate-180');
+        });
+
+        // Trigger print
+        window.print();
+
+        // Note: We don't collapse content back because users might want to see it expanded
+        // If needed, we could add a timeout to collapse it back after printing
     }
 }
 
 // ==========================================
-// MAIN APPLICATION
+// APPLICATION INITIALIZATION
 // ==========================================
 
 class AsiatensorApp {
     constructor() {
-        this.auth = new AuthChecker();
-        this.theme = new ThemeManager();
-        this.languageLoader = new LanguageLoader();
-        this.interactions = new InteractionManager();
-        
-        // Initialize Picture-in-Picture functionality
-        this.pipModal = new PictureInPictureModal();
-        this.interactiveContent = new InteractiveContentManager(this.pipModal);
-        
-        this.init();
+        this.languageLoader = null;
+        this.scrollspyManager = null;
+        this.pipModal = null;
+        this.themeManager = null;
+        this.printManager = null;
     }
 
     async init() {
-        this.logSystemInfo();
-        this.initLanguageSwitcher();
-        await this.loadInitialLanguage();
-        
-        // Enhance content with interactive elements after initial load
-        this.enhanceContentAfterLoad();
-        
-        this.addCustomStyles();
-    }
-    
-    enhanceContentAfterLoad() {
-        // Delay content enhancement to ensure DOM is fully loaded
-        setTimeout(() => {
-            this.interactiveContent.enhanceContent();
-        }, 1000);
-        
-        // Re-enhance content when language changes
-        const originalSwitchLanguage = this.languageLoader.switchLanguage.bind(this.languageLoader);
-        this.languageLoader.switchLanguage = async (langCode) => {
-            await originalSwitchLanguage(langCode);
-            setTimeout(() => {
-                this.interactiveContent.enhanceContent();
-            }, 500);
-        };
-    }
-
-    async loadInitialLanguage() {
         try {
-            await this.languageLoader.switchLanguage(this.languageLoader.currentLanguage);
+            console.log('🚀 Initializing Asiatensor Executive Brief...');
+            
+            // Initialize core systems
+            this.languageLoader = new LanguageLoader();
+            this.themeManager = new ThemeManager();
+            this.printManager = new PrintManager();
+            
+            // Initialize UI components
+            this.scrollspyManager = new ScrollspyManager();
+            this.pipModal = new PictureInPictureModal();
+            
+            // Load initial language
+            const initialLanguage = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.LANGUAGE) || APP_CONFIG.DEFAULT_LANGUAGE;
+            await this.languageLoader.switchLanguage(initialLanguage);
+            
+            // Make functions globally available
+            this.bindGlobalFunctions();
+            
+            console.log('✅ Application initialized successfully');
+            
         } catch (error) {
-            console.error('Failed to load initial language:', error);
+            console.error('❌ Failed to initialize application:', error);
         }
     }
 
-    initLanguageSwitcher() {
-        const languageButtons = document.querySelectorAll('.lang-btn');
-        
-        languageButtons.forEach((btn) => {
-            const lang = btn.getAttribute('data-lang');
-            
-            btn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                if (lang && !this.languageLoader.isLoading) {
-                    await this.languageLoader.switchLanguage(lang);
-                }
-            });
-        });
-    }
-
-    addCustomStyles() {
-        const style = document.createElement('style');
-        style.id = 'asiatensor-enhancements';
-        style.textContent = `
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-            
-            @keyframes modalSlideIn {
-                from { 
-                    opacity: 0; 
-                    transform: translateY(20px) scale(0.95); 
-                }
-                to { 
-                    opacity: 1; 
-                    transform: translateY(0) scale(1); 
-                }
-            }
-            
-            @keyframes modalSlideOut {
-                from { 
-                    opacity: 1; 
-                    transform: translateY(0) scale(1); 
-                }
-                to { 
-                    opacity: 0; 
-                    transform: translateY(-20px) scale(0.95); 
-                }
-            }
-            
-            @keyframes backdropFadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            
-            @keyframes floatIn {
-                from { 
-                    opacity: 0; 
-                    transform: translateY(10px); 
-                }
-                to { 
-                    opacity: 1; 
-                    transform: translateY(0); 
-                }
-            }
-            
-            /* Modal animations */
-            .modal-overlay {
-                animation: backdropFadeIn 0.3s ease-out;
-            }
-            
-            .modal-content {
-                animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            
-            .modal-content.closing {
-                animation: modalSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            
-            /* Enhanced collapsible animations */
-            .collapsible-trigger {
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                position: relative;
-            }
-            
-            .collapsible-trigger::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -4px;
-                width: 2px;
-                height: 0;
-                background: linear-gradient(135deg, #3b82f6, #06b6d4);
-                transition: height 0.3s ease;
-                border-radius: 1px;
-            }
-            
-            .collapsible-trigger:hover {
-                background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(6, 182, 212, 0.03));
-                transform: translateX(2px);
-                box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-            }
-            
-            .collapsible-trigger:hover::before {
-                height: 100%;
-            }
-            
-            .collapsible-content {
-                overflow: hidden;
-            }
-            
-            /* Custom scrollbar */
-            ::-webkit-scrollbar {
-                width: 8px;
-            }
-            
-            ::-webkit-scrollbar-track {
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 4px;
-            }
-            
-            ::-webkit-scrollbar-thumb {
-                background: linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(6, 182, 212, 0.6));
-                border-radius: 4px;
-                transition: background 0.3s ease;
-            }
-            
-            ::-webkit-scrollbar-thumb:hover {
-                background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(6, 182, 212, 0.8));
-            }
-            
-            /* Firefox scrollbar */
-            * {
-                scrollbar-width: thin;
-                scrollbar-color: rgba(59, 130, 246, 0.6) rgba(255, 255, 255, 0.1);
-            }
-            
-            /* Smooth focus transitions */
-            .lang-btn {
-                transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-                position: relative;
-                overflow: hidden;
-            }
-            
-            .lang-btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-                transition: left 0.5s ease;
-            }
-            
-            .lang-btn:hover::before {
-                left: 100%;
-            }
-            
-            .lang-btn:disabled {
-                cursor: not-allowed;
-            }
-            
-            /* Enhanced section animations */
-            .bento-box {
-                animation: floatIn 0.6s ease-out;
-                animation-fill-mode: both;
-            }
-            
-            .bento-box:nth-child(1) { animation-delay: 0.1s; }
-            .bento-box:nth-child(2) { animation-delay: 0.2s; }
-            .bento-box:nth-child(3) { animation-delay: 0.3s; }
-            .bento-box:nth-child(4) { animation-delay: 0.4s; }
-            
-            /* Smooth content transitions */
-            [data-translatable] {
-                transition: opacity 0.2s ease-out;
-            }
-            
-            /* Loading pulse effect */
-            .loading-pulse {
-                animation: pulse 1.5s ease-in-out infinite;
-            }
-            
-            @keyframes pulse {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.5; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    logSystemInfo() {
-        console.group('🚀 Asiatensor Executive Brief');
-        console.info('📊 Dashboard Ready');
-        console.info(`🎨 Theme: ${this.theme.currentTheme}`);
-        console.info(`🌍 Language: ${this.languageLoader.currentLanguage}`);
-        console.info('🔐 Authenticated');
-        console.groupEnd();
+    bindGlobalFunctions() {
+        // Make functions available globally for onclick handlers
+        window.switchLanguage = (lang) => this.languageLoader.switchLanguage(lang);
+        window.toggleTheme = () => this.themeManager.toggle();
+        window.toggleCollapsible = (trigger) => CollapsibleManager.toggleCollapsible(trigger);
     }
 }
 
 // ==========================================
-// INITIALIZATION
+// APPLICATION STARTUP
 // ==========================================
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        window.asiatensorApp = new AsiatensorApp();
-        console.info('✅ Executive Brief System Initialized');
-    } catch (error) {
-        console.error('❌ Failed to initialize application:', error);
-    }
+    const app = new AsiatensorApp();
+    await app.init();
 });
 
-// Handle page unload
-window.addEventListener('beforeunload', () => {
-    if (window.asiatensorApp) {
-        console.info('💤 Session ending...');
+// Debug helper
+window.AsiatensorDebug = {
+    getConfig: () => APP_CONFIG,
+    getCurrentLanguage: () => window.app?.languageLoader?.currentLanguage,
+    getTheme: () => window.app?.themeManager?.currentTheme,
+    clearCache: () => {
+        localStorage.clear();
+        location.reload();
     }
-});
-
-// Export for potential external use
-export { AsiatensorApp, LanguageLoader, ThemeManager };
+};

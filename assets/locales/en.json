@@ -14,14 +14,14 @@
     "total_funding": "Total Funding Target: ~$20M USD (completed in phases)",
     "round1_funding": "Round 1 Funding Target: $7M - $8M USD",
     "target_market_cap": "Target Market Cap: $279M USD",
-    "projected_annual_profit": "Projected Annual Profit: ~$89.6M USD",
-    "projected_daily_volume": "Projected Daily Trading Volume: $1.5M - $4.5M USD"
+    "projected_annual_profit": "Annual Profit Engine: ~$89.6M USD",
+    "projected_daily_volume": "Target Liquidity: $1.5M - $4.5M USD"
   },
 
   "chapter1": {
     "title": "Chapter 1: The Grand Narrative - Asia's Historic Opportunity",
     "section1_1": {
-      "title": "1.1 The Great Dislocation: Asia's Web3 Dominance vs TAO's Value Vacuum",
+      "title": "1.1 The Great Disconnect: Asia's Web3 Dominance vs TAO's Value Vacuum",
       "content1": "Any successful global digital asset, whether SOL, ETH or BNB, owes its success to Asia's robust capital base and user foundation. Asia is the undisputed center of the Web3 world, renowned for its deep capital pools, sophisticated retail investors, and immense enthusiasm for technological innovation.",
       "content2": "However, within this thriving landscape exists a profound, structural contradiction: the absolute leader in decentralized AI—Bittensor (TAO)—remains virtually absent from Asian markets. Despite TAO's presence on Binance and Coinbase with massive trading volumes, Asia's most active capital markets—**compliant exchanges in Japan, Korea, and Hong Kong have not listed TAO trading**.",
       "content3": "This 'disconnect' is not TAO's weakness, but rather **a historic arbitrage opportunity with a time window, prepared for first movers**. The cognitive vacuum regarding TAO in Asian markets means the largest incremental users and capital have yet to enter."
@@ -46,7 +46,7 @@
     "title": "Chapter 2: Business Model - Dual-Engine Value Creation Engine",
     "intro": "Our business model aims to build a high-tech-barrier, sustainable value creation system.",
     "section2_1": {
-      "title": "2.1 Engine One: Subnet Operations (High-Growth Profit Core)",
+      "title": "2.1 Engine One: Subnet Operations (High-Growth Pillar of Profit)",
       "content1": "We play the role of **'premium developers'** in this emerging AI economy. We identify high-value commercial domains (such as finance, biotech, decentralized science), then build and operate domain-specific 'digital real estate'—namely **Subnets**.",
       "content2": "As owners of these core infrastructures, we will receive 18% of the TAO generated daily by each subnet as profit. Our goal is to expand our operated subnet scale to **10-30 subnets** within 1-2 years after launch. This will not only bring us exponentially growing, high-margin TAO revenue streams (projected ROI > 200%), but also deeply embed us in the most important AI application scenarios of the future."
     },
@@ -114,7 +114,7 @@
     },
     "section5_2": {
       "title": "5.2 Valuation & Return Projections",
-      "content1": "Our valuation model is based on our ability to **actively create new TAO** through technical operations—a core advantage that no comparable company possesses.",
+      "content1": "Our valuation model is based on our proven technical operational capabilities—a core advantage that no comparable company possesses.",
       "core_params": "Core Parameter Assumptions:",
       "initial_tao": "Initial TAO Holdings: 13,100 TAO",
       "annual_output": "Annual TAO Output (Operating Profit): Based on operating **15 subnets** target, conservatively estimated annual output of **~112,000 TAO/year**.",
