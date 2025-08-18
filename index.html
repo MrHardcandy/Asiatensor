@@ -104,22 +104,22 @@
                 <!-- BENTO GRID -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                     <div class="bento-box rounded-xl p-6 text-center">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">Round 1 Funding Target</div>
+                        <div id="funding-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Round 1 Funding Target</div>
                         <div class="text-3xl md:text-4xl font-bold font-serif metric-value">$7M-$8M</div>
                     </div>
                     
                     <div class="bento-box rounded-xl p-6 text-center">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">Target Market Cap</div>
+                        <div id="market-cap-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Target Market Cap</div>
                         <div class="text-3xl md:text-4xl font-bold font-serif metric-value">$279M</div>
                     </div>
                     
                     <div class="bento-box rounded-xl p-6 text-center">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">Projected Annual Profit</div>
+                        <div id="profit-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Projected Annual Profit</div>
                         <div class="text-3xl md:text-4xl font-bold font-serif metric-value">~$89.6M</div>
                     </div>
                     
                     <div class="bento-box rounded-xl p-6 text-center">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">Projected Daily Volume</div>
+                        <div id="volume-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Projected Daily Volume</div>
                         <div class="text-2xl md:text-3xl font-bold font-serif metric-value whitespace-nowrap">$1.5M-$4.5M</div>
                     </div>
                 </div>
@@ -129,10 +129,10 @@
             <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
                     <div>
-                        <h2 class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
+                        <h2 id="opportunity-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
                             The Great Disconnect: Asia's Historic Opportunity
                         </h2>
-                        <p class="text-gray-600 dark:text-gray-400 mt-2">
+                        <p id="opportunity-summary" class="text-gray-600 dark:text-gray-400 mt-2">
                             Asia is the undisputed epicenter of Web3, yet TAO remains largely unknown. This presents a historic arbitrage opportunity.
                         </p>
                     </div>
@@ -142,8 +142,157 @@
                 </div>
                 <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
                     <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <p>Asia represents 60% of global crypto adoption and houses the world's most sophisticated DeFi protocols, yet TAO remains largely unknown outside technical circles. While Western markets debate AI regulation, Asian entrepreneurs are building the future.</p>
-                        <p>Our market intelligence reveals a critical window: institutional capital is seeking exposure to decentralized AI, but lacks the infrastructure and expertise to access this emerging asset class safely and efficiently.</p>
+                        <p id="opportunity-para1">Asia represents 60% of global crypto adoption and houses the world's most sophisticated DeFi protocols, yet TAO remains largely unknown outside technical circles. While Western markets debate AI regulation, Asian entrepreneurs are building the future.</p>
+                        <p id="opportunity-para2">Our market intelligence reveals a critical window: institutional capital is seeking exposure to decentralized AI, but lacks the infrastructure and expertise to access this emerging asset class safely and efficiently.</p>
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg mt-6">
+                            <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-2">Key Market Facts</h4>
+                            <ul class="text-sm space-y-1">
+                                <li>• Asia accounts for over 60% of global crypto trading volume</li>
+                                <li>• TAO not listed on major Asian exchanges (Upbit, Bithumb, bitFlyer)</li>
+                                <li>• Regulatory frameworks developing in Singapore, Hong Kong, Japan</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: Dual-Engine Profit Model -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
+                    <div>
+                        <h2 id="strategy-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
+                            Our Dual-Engine Profit Model
+                        </h2>
+                        <p id="strategy-summary" class="text-gray-600 dark:text-gray-400 mt-2">
+                            Combining subnet operations and validator nodes to maximize TAO generation and market positioning in Asia.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <h4 class="text-green-600 dark:text-green-400">Engine 1: Subnet Operations</h4>
+                        <p>Deploy specialized AI subnets targeting Asian market needs. Focus on language processing, trading algorithms, and regulatory compliance automation.</p>
+                        
+                        <h4 class="text-blue-600 dark:text-blue-400">Engine 2: Validator Network</h4>
+                        <p>Establish validator nodes across strategic Asian jurisdictions to maximize TAO rewards while ensuring regulatory compliance.</p>
+                        
+                        <h4 class="text-purple-600 dark:text-purple-400">Market Positioning</h4>
+                        <p>Become the premier gateway for Asian institutional access to Bittensor ecosystem, leveraging first-mover advantage.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: Financial Projections -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
+                    <div>
+                        <h2 id="financials-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
+                            TAO Production & Revenue Model
+                        </h2>
+                        <p id="financials-summary" class="text-gray-600 dark:text-gray-400 mt-2">
+                            Annual production of ~112,000 TAO, generating approximately $89.6M in annual profit under base case scenario.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">TAO Production Metrics</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Annual TAO Output</span>
+                                        <span class="text-blue-600 dark:text-blue-400 font-semibold">~112,000</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Conservative Scenario (14x ROI)</span>
+                                        <span class="text-green-600 dark:text-green-400">$58.8M</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Base Case Scenario (28x ROI)</span>
+                                        <span class="text-green-600 dark:text-green-400">$89.6M</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="text-purple-600 dark:text-purple-400 font-semibold mb-3">Timeline & Milestones</h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Round 1 Completion</span>
+                                        <span>Q1 2025</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Subnet Deployment</span>
+                                        <span>Q2 2025</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Full Production</span>
+                                        <span>Q3 2025</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: Team & Expertise -->
+            <section class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
+                    <div>
+                        <h2 id="roadmap-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
+                            Execution Team & Strategic Advantages
+                        </h2>
+                        <p id="roadmap-summary" class="text-gray-600 dark:text-gray-400 mt-2">
+                            Among the few global experts with complete Bittensor expertise and established government relationships across Japan.
+                        </p>
+                    </div>
+                    <svg class="w-6 h-6 transition-transform text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800">
+                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="text-center bg-gray-50 dark:bg-gray-800/30 p-4 rounded-lg">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">AI</span>
+                                </div>
+                                <h5 class="font-semibold">Bittensor Expertise</h5>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Complete ecosystem mastery</p>
+                            </div>
+                            <div class="text-center bg-gray-50 dark:bg-gray-800/30 p-4 rounded-lg">
+                                <div class="w-12 h-12 bg-green-600 rounded-full mx-auto mb-2 flex items-center justify-center">
+                                    <span class="text-white font-bold text-sm">GOV</span>
+                                </div>
+                                <h5 class="font-semibold">Government Relations</h5>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Multi-region partnerships</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+                            <h4 class="text-orange-600 dark:text-orange-400 font-semibold mb-3">Strategic Advantages</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>Exclusive Bittensor technical expertise in Asian markets</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>Established relationships with Japanese government entities</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                                    <span>First-mover advantage in regulatory-compliant TAO operations</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -159,27 +308,97 @@
     <script>
         console.log('🚀 Starting working version script...');
         
-        // Content data
+        // Complete content data
         const content = {
             'en': {
                 title: 'Asiatensor Executive Brief',
-                subtitle: 'Capitalizing on Asia\'s Historic AI Investment Opportunity'
+                subtitle: 'Capitalizing on Asia\'s Historic AI Investment Opportunity',
+                // Bento box labels
+                funding_label: 'Round 1 Funding Target',
+                market_cap_label: 'Target Market Cap',  
+                profit_label: 'Projected Annual Profit',
+                volume_label: 'Projected Daily Volume',
+                // Section titles and summaries
+                opportunity_title: 'The Great Disconnect: Asia\'s Historic Opportunity',
+                opportunity_summary: 'Asia is the undisputed epicenter of Web3, yet TAO remains largely unknown. This presents a historic arbitrage opportunity.',
+                strategy_title: 'Our Dual-Engine Profit Model',
+                strategy_summary: 'Combining subnet operations and validator nodes to maximize TAO generation and market positioning in Asia.',
+                financials_title: 'TAO Production & Revenue Model',
+                financials_summary: 'Annual production of ~112,000 TAO, generating approximately $89.6M in annual profit under base case scenario.',
+                roadmap_title: 'Execution Team & Strategic Advantages',
+                roadmap_summary: 'Among the few global experts with complete Bittensor expertise and established government relationships across Japan.'
             },
             'zh-cn': {
                 title: 'Asiatensor高管简报',
-                subtitle: '把握亚洲历史性AI投资机遇'
+                subtitle: '把握亚洲历史性AI投资机遇',
+                // Bento box labels
+                funding_label: '第1轮融资目标',
+                market_cap_label: '目标市值',
+                profit_label: '预计年利润',
+                volume_label: '预计日交易量',
+                // Section titles and summaries
+                opportunity_title: '巨大机遇：亚洲历史性投资机会',
+                opportunity_summary: '亚洲是Web3无可争议的中心，但TAO仍然鲜为人知。这呈现了一个历史性的套利机会。',
+                strategy_title: '我们的双引擎盈利模型',
+                strategy_summary: '结合子网运营和验证节点，最大化TAO生产和在亚洲的市场定位。',
+                financials_title: 'TAO生产和收入模型',
+                financials_summary: '年产约112,000枚TAO，在基本情况下产生约8960万美元的年利润。',
+                roadmap_title: '执行团队与战略优势',
+                roadmap_summary: '拥有完整Bittensor专业知识并与日本政府建立了良好关系的少数全球专家之一。'
             },
             'zh-hk': {
                 title: 'Asiatensor行政摘要',
-                subtitle: '把握亞洲歷史性AI投資機遇'  
+                subtitle: '把握亞洲歷史性AI投資機遇',
+                // Bento box labels  
+                funding_label: '第1輪融資目標',
+                market_cap_label: '目標市值',
+                profit_label: '預計年利潤',
+                volume_label: '預計日交易量',
+                // Section titles and summaries
+                opportunity_title: '巨大機遇：亞洲歷史性投資機會',
+                opportunity_summary: '亞洲是Web3無可爭議的中心，但TAO仍然鮮為人知。這呈現了一個歷史性的套利機會。',
+                strategy_title: '我們的雙引擎盈利模型',
+                strategy_summary: '結合子網運營和驗證節點，最大化TAO生產和在亞洲的市場定位。',
+                financials_title: 'TAO生產和收入模型',
+                financials_summary: '年產約112,000枚TAO，在基本情況下產生約8960萬美元的年利潤。',
+                roadmap_title: '執行團隊與戰略優勢',
+                roadmap_summary: '擁有完整Bittensor專業知識並與日本政府建立了良好關係的少數全球專家之一。'
             },
             'ja': {
                 title: 'Asiatensorエグゼクティブブリーフ',
-                subtitle: 'アジアの歴史的AI投資機会を活用'
+                subtitle: 'アジアの歴史的AI投資機会を活用',
+                // Bento box labels
+                funding_label: '第1ラウンド資金調達目標',
+                market_cap_label: '目標時価総額',
+                profit_label: '予想年間利益',
+                volume_label: '予想日間取引高',
+                // Section titles and summaries
+                opportunity_title: '大きな機会：アジアの歴史的投資機会',
+                opportunity_summary: 'アジアはWeb3の議論の余地のない中心地ですが、TAOはまだほとんど知られていません。これは歴史的な裁定機会を提示しています。',
+                strategy_title: '私たちのデュアルエンジン利益モデル',
+                strategy_summary: 'サブネット運営とバリデーターノードを組み合わせて、TAO生成とアジアでの市場ポジショニングを最大化します。',
+                financials_title: 'TAO生産と収益モデル',
+                financials_summary: '年間約112,000 TAOを生産し、ベースケースシナリオで約8960万ドルの年間利益を生成します。',
+                roadmap_title: '実行チームと戦略的優位性',
+                roadmap_summary: '完全なBittensor専門知識を持ち、日本全体で政府との確立された関係を持つ数少ないグローバル専門家の一人です。'
             },
             'ko': {
                 title: '아시아텐서 경영진 브리핑',
-                subtitle: '아시아의 역사적 AI 투자 기회 활용'
+                subtitle: '아시아의 역사적 AI 투자 기회 활용',
+                // Bento box labels
+                funding_label: '1라운드 자금조달 목표',
+                market_cap_label: '목표 시가총액',
+                profit_label: '예상 연간 수익',
+                volume_label: '예상 일일 거래량',
+                // Section titles and summaries  
+                opportunity_title: '큰 기회: 아시아의 역사적 투자 기회',
+                opportunity_summary: '아시아는 Web3의 확실한 중심지이지만, TAO는 여전히 널리 알려지지 않았습니다. 이는 역사적인 차익거래 기회를 제시합니다.',
+                strategy_title: '우리의 이중 엔진 수익 모델',
+                strategy_summary: '서브넷 운영과 검증자 노드를 결합하여 TAO 생성과 아시아에서의 시장 포지셔닝을 최대화합니다.',
+                financials_title: 'TAO 생산 및 수익 모델',
+                financials_summary: '연간 약 112,000 TAO를 생산하여 기본 시나리오에서 약 8,960만 달러의 연간 수익을 창출합니다.',
+                roadmap_title: '실행 팀 및 전략적 우위',
+                roadmap_summary: '완전한 Bittensor 전문 지식을 보유하고 일본 전역에서 정부와의 확립된 관계를 가진 몇 안 되는 글로벌 전문가 중 하나입니다。'
             }
         };
         
@@ -226,12 +445,30 @@
                 activeBtn.classList.add('text-white', 'bg-gray-700');
             }
             
-            // Update content
+            // Update all content
             if (content[lang]) {
+                // Main titles
                 document.getElementById('main-title').textContent = content[lang].title;
                 document.getElementById('main-subtitle').textContent = content[lang].subtitle;
+                
+                // Bento box labels
+                document.getElementById('funding-label').textContent = content[lang].funding_label;
+                document.getElementById('market-cap-label').textContent = content[lang].market_cap_label;
+                document.getElementById('profit-label').textContent = content[lang].profit_label;
+                document.getElementById('volume-label').textContent = content[lang].volume_label;
+                
+                // Section titles and summaries
+                document.getElementById('opportunity-title').textContent = content[lang].opportunity_title;
+                document.getElementById('opportunity-summary').textContent = content[lang].opportunity_summary;
+                document.getElementById('strategy-title').textContent = content[lang].strategy_title;
+                document.getElementById('strategy-summary').textContent = content[lang].strategy_summary;
+                document.getElementById('financials-title').textContent = content[lang].financials_title;
+                document.getElementById('financials-summary').textContent = content[lang].financials_summary;
+                document.getElementById('roadmap-title').textContent = content[lang].roadmap_title;
+                document.getElementById('roadmap-summary').textContent = content[lang].roadmap_summary;
+                
                 currentLang = lang;
-                console.log('→ Content updated to:', lang);
+                console.log('→ All content updated to:', lang);
             }
         }
         
