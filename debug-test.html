@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-white text-gray-800 dark:bg-black dark:text-white p-8">
+    <h1>Debug Test Page</h1>
+    
+    <!-- Test Theme Toggle -->
+    <button id="theme-test" class="p-2 bg-blue-600 text-white rounded mr-4">Toggle Theme</button>
+    
+    <!-- Test Language Buttons -->
+    <button class="lang-test p-2 bg-green-600 text-white rounded mr-2" data-lang="en">EN</button>
+    <button class="lang-test p-2 bg-green-600 text-white rounded mr-2" data-lang="zh-cn">简体</button>
+    <button class="lang-test p-2 bg-green-600 text-white rounded mr-2" data-lang="zh-hk">繁體</button>
+    
+    <div id="test-content" data-i18n="summary.title" class="mt-4 p-4 bg-gray-100 dark:bg-gray-800">
+        Test content here
+    </div>
+    
+    <script>
+        console.log('Debug script starting...');
+        
+        // Simple theme toggle test
+        document.getElementById('theme-test').addEventListener('click', function() {
+            console.log('Theme button clicked');
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                console.log('Switched to light mode');
+            } else {
+                html.classList.add('dark');
+                console.log('Switched to dark mode');
+            }
+        });
+        
+        // Simple language test
+        document.querySelectorAll('.lang-test').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                console.log('Language button clicked:', lang);
+                
+                const testContent = document.getElementById('test-content');
+                
+                const messages = {
+                    'en': 'English content',
+                    'zh-cn': '简体中文内容', 
+                    'zh-hk': '繁體中文內容'
+                };
+                
+                testContent.textContent = messages[lang] || 'Unknown language';
+            });
+        });
+        
+        console.log('Debug script initialized');
+    </script>
+</body>
+</html>

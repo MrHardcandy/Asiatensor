@@ -322,6 +322,118 @@
 
     <!-- Include content and scripts -->
     <script src="assets/content.js"></script>
-    <script src="assets/script.js"></script>
+    <script>
+        // Direct inline handlers for immediate functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inline handlers initializing...');
+            
+            // Theme toggle handler
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            if (themeBtn) {
+                console.log('✅ Theme button found');
+                themeBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🎨 Theme toggle clicked');
+                    
+                    const html = document.documentElement;
+                    const svg = themeBtn.querySelector('svg path');
+                    
+                    if (html.classList.contains('dark')) {
+                        html.classList.remove('dark');
+                        html.classList.add('light');
+                        // Sun icon for light mode
+                        if (svg) svg.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
+                        console.log('→ LIGHT MODE activated');
+                    } else {
+                        html.classList.remove('light');
+                        html.classList.add('dark');
+                        // Moon icon for dark mode  
+                        if (svg) svg.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
+                        console.log('→ DARK MODE activated');
+                    }
+                });
+            } else {
+                console.error('❌ Theme button not found');
+            }
+            
+            // Language buttons handler
+            const langButtons = document.querySelectorAll('.lang-btn');
+            console.log('🌍 Found', langButtons.length, 'language buttons');
+            
+            langButtons.forEach(function(btn, index) {
+                const lang = btn.getAttribute('data-lang');
+                console.log('Setting up lang button:', lang);
+                
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🌍 Language clicked:', lang);
+                    
+                    // Update button states
+                    langButtons.forEach(function(b) {
+                        b.classList.remove('text-white', 'bg-gray-700');
+                        b.classList.add('text-gray-600', 'dark:text-gray-400');
+                    });
+                    btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+                    btn.classList.add('text-white', 'bg-gray-700');
+                    
+                    // Update content
+                    if (window.ASIATENSOR_CONTENT) {
+                        console.log('📝 Updating content...');
+                        const elements = document.querySelectorAll('[data-i18n]');
+                        elements.forEach(function(el) {
+                            const key = el.getAttribute('data-i18n');
+                            const content = getContent(key, lang);
+                            if (content) {
+                                el.textContent = content;
+                            }
+                        });
+                        console.log('✅ Content updated for', lang);
+                    } else {
+                        console.error('❌ ASIATENSOR_CONTENT not available');
+                    }
+                });
+            });
+            
+            // Collapsible cards
+            const triggers = document.querySelectorAll('.collapsible-trigger');
+            console.log('📦 Found', triggers.length, 'collapsible triggers');
+            
+            triggers.forEach(function(trigger) {
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('📦 Collapsible clicked');
+                    
+                    const content = trigger.nextElementSibling;
+                    const icon = trigger.querySelector('.collapsible-icon');
+                    
+                    if (content) {
+                        content.classList.toggle('hidden');
+                        if (icon) {
+                            icon.classList.toggle('rotate-180');
+                        }
+                        console.log('→ Content toggled');
+                    }
+                });
+            });
+            
+            console.log('✅ All inline handlers ready');
+        });
+        
+        // Helper function
+        function getContent(path, lang) {
+            const keys = path.split('.');
+            let obj = window.ASIATENSOR_CONTENT;
+            
+            for (const key of keys) {
+                if (obj && obj[key]) {
+                    obj = obj[key];
+                } else {
+                    return null;
+                }
+            }
+            
+            return obj && obj[lang] ? obj[lang] : null;
+        }
+    </script>
 </body>
 </html>

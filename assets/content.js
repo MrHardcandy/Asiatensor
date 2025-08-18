@@ -3,7 +3,8 @@
  * Contains all translated content for the presentation
  */
 
-const ASIATENSOR_CONTENT = {
+// Global content object
+window.ASIATENSOR_CONTENT = {
     // Executive Summary Section
     summary: {
         title: {
@@ -877,6 +878,5 @@ const COMPANY_DATA = {
     }
 };
 
-// Export for use in other modules
-window.ASIATENSOR_CONTENT = ASIATENSOR_CONTENT;
-window.COMPANY_DATA = COMPANY_DATA;
+// Content loaded successfully
+console.log('✅ ASIATENSOR_CONTENT loaded with', Object.keys(window.ASIATENSOR_CONTENT).length, 'sections');

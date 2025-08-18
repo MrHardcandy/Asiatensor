@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+</head>
+<body class="bg-white text-gray-800 dark:bg-black dark:text-white min-h-screen p-8">
+    
+    <!-- Header with controls -->
+    <header class="mb-8 p-4 border-b">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold">τ Asiatensor Test</h1>
+            
+            <div class="flex items-center space-x-4">
+                <!-- Theme Toggle -->
+                <button id="theme-btn" class="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Toggle Theme
+                </button>
+                
+                <!-- Language Buttons -->
+                <div class="flex space-x-2">
+                    <button class="lang-btn px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" data-lang="en">EN</button>
+                    <button class="lang-btn px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" data-lang="zh-cn">简体</button>
+                    <button class="lang-btn px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" data-lang="zh-hk">繁體</button>
+                    <button class="lang-btn px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700" data-lang="ja">日本語</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Content area -->
+    <main>
+        <div class="text-center mb-8">
+            <h2 id="main-title" class="text-4xl font-bold mb-4">Asiatensor Executive Brief</h2>
+            <p id="main-subtitle" class="text-xl">Capitalizing on Asia's Historic AI Investment Opportunity</p>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg text-center">
+                <div class="text-sm mb-2">Round 1 Funding Target</div>
+                <div class="text-3xl font-bold text-blue-600">$7M-$8M</div>
+            </div>
+            <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg text-center">
+                <div class="text-sm mb-2">Target Market Cap</div>
+                <div class="text-3xl font-bold text-blue-600">$279M</div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Inline Script -->
+    <script>
+        console.log('🚀 Inline test script starting...');
+        
+        // Content for different languages
+        const content = {
+            en: {
+                title: "Asiatensor Executive Brief",
+                subtitle: "Capitalizing on Asia's Historic AI Investment Opportunity"
+            },
+            "zh-cn": {
+                title: "Asiatensor高管简报", 
+                subtitle: "把握亚洲历史性AI投资机遇"
+            },
+            "zh-hk": {
+                title: "Asiatensor行政摘要",
+                subtitle: "把握亞洲歷史性AI投資機遇"
+            },
+            ja: {
+                title: "Asiatensorエグゼクティブブリーフ",
+                subtitle: "アジアの歴史的AI投資機会を活用"
+            }
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded');
+            
+            // Theme toggle
+            const themeBtn = document.getElementById('theme-btn');
+            themeBtn.addEventListener('click', function() {
+                console.log('Theme button clicked!');
+                const html = document.documentElement;
+                
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    themeBtn.textContent = 'Dark Mode';
+                    console.log('Switched to LIGHT');
+                } else {
+                    html.classList.add('dark');  
+                    themeBtn.textContent = 'Light Mode';
+                    console.log('Switched to DARK');
+                }
+            });
+            
+            // Language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    console.log('Language clicked:', lang);
+                    
+                    // Update content
+                    const titleEl = document.getElementById('main-title');
+                    const subtitleEl = document.getElementById('main-subtitle');
+                    
+                    if (content[lang]) {
+                        titleEl.textContent = content[lang].title;
+                        subtitleEl.textContent = content[lang].subtitle;
+                        
+                        // Update button states
+                        document.querySelectorAll('.lang-btn').forEach(b => {
+                            b.classList.remove('bg-red-600');
+                            b.classList.add('bg-green-600');
+                        });
+                        this.classList.remove('bg-green-600');
+                        this.classList.add('bg-red-600');
+                        
+                        console.log('Content updated for', lang);
+                    }
+                });
+            });
+            
+            console.log('✅ All handlers initialized');
+        });
+    </script>
+    
+</body>
+</html>
