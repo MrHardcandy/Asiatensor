@@ -1,0 +1,14 @@
+{
+  "name": "asiatensor",
+  "version": "1.0.0",
+  "description": "Asiatensor Executive Brief - Asia's leading distributed AI investment platform",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "start": "python3 -m http.server 3000",
+    "build": "echo 'Static site - no build required'"
+  },
+  "keywords": ["bittensor", "tao", "asia", "ai", "investment"],
+  "author": "Asiatensor Team",
+  "license": "MIT"
+}

@@ -99,25 +99,114 @@ class LanguageLoader {
     }
 
     renderContent(data) {
-        // Update main titles and subtitles
-        document.getElementById('main-title').textContent = data.title;
-        document.getElementById('main-subtitle').textContent = data.subtitle;
-        
-        // Update bento box labels
-        document.getElementById('funding-label').textContent = data.executive_summary.round1_funding.split(':')[0] + ':';
-        document.getElementById('market-cap-label').textContent = data.executive_summary.target_market_cap.split(':')[0] + ':';
-        document.getElementById('profit-label').textContent = data.executive_summary.projected_annual_profit.split(':')[0] + ':';
-        document.getElementById('volume-label').textContent = data.executive_summary.projected_daily_volume.split(':')[0] + ':';
-        
-        // Update section titles and summaries
-        if (data.chapter1?.section1_1?.title) {
-            document.getElementById('opportunity-title').textContent = data.chapter1.section1_1.title;
+        try {
+            // Update main titles and subtitles
+            const mainTitle = document.getElementById('main-title');
+            const mainSubtitle = document.getElementById('main-subtitle');
+            if (mainTitle) mainTitle.textContent = data.title || 'Asiatensor Executive Brief';
+            if (mainSubtitle) mainSubtitle.textContent = data.subtitle || 'Capitalizing on Asia\'s Historic AI Investment Opportunity';
+            
+            // Update bento box labels with proper fallbacks
+            const fundingLabel = document.getElementById('funding-label');
+            const marketCapLabel = document.getElementById('market-cap-label');
+            const profitLabel = document.getElementById('profit-label');
+            const volumeLabel = document.getElementById('volume-label');
+            
+            if (fundingLabel && data.executive_summary?.round1_funding) {
+                fundingLabel.textContent = data.executive_summary.round1_funding.split(':')[0] + ':';
+            }
+            if (marketCapLabel && data.executive_summary?.target_market_cap) {
+                marketCapLabel.textContent = data.executive_summary.target_market_cap.split(':')[0] + ':';
+            }
+            if (profitLabel && data.executive_summary?.projected_annual_profit) {
+                profitLabel.textContent = data.executive_summary.projected_annual_profit.split(':')[0] + ':';
+            }
+            if (volumeLabel && data.executive_summary?.projected_daily_volume) {
+                volumeLabel.textContent = data.executive_summary.projected_daily_volume.split(':')[0] + ':';
+            }
+            
+            // Update all section titles and summaries
+            const sectionMappings = [
+                { elementId: 'opportunity-title', dataPath: 'chapter1.title', fallback: 'Chapter 1: The Great Disconnect - Asia\'s Web3 Dominance vs TAO\'s Value Vacuum' },
+                { elementId: 'opportunity-summary', dataPath: 'chapter1.summary', fallback: 'Asia is the undisputed epicenter of Web3, yet TAO remains largely unknown. This presents a historic arbitrage opportunity.' },
+                { elementId: 'strategy-title', dataPath: 'chapter2.title', fallback: 'Chapter 2: Dual-Engine Profit Model' },
+                { elementId: 'strategy-summary', dataPath: 'chapter2.summary', fallback: 'Combining subnet operations and validator nodes to maximize TAO generation and market positioning in Asia.' },
+                { elementId: 'financials-title', dataPath: 'chapter3.title', fallback: 'Chapter 3: TAO Production & Revenue Model' },
+                { elementId: 'financials-summary', dataPath: 'chapter3.summary', fallback: 'Annual production of ~112,000 TAO, generating approximately $89.6M in annual profit under base case scenario.' },
+                { elementId: 'roadmap-title', dataPath: 'chapter4.title', fallback: 'Chapter 4: Market Entry Strategy' },
+                { elementId: 'roadmap-summary', dataPath: 'chapter4.summary', fallback: 'Three-phase development plan with systematic approach to infrastructure, market expansion, and ecosystem dominance.' },
+                { elementId: 'risks-title', dataPath: 'chapter6.title', fallback: 'Chapter 6: Risk Analysis and Mitigation Strategies' },
+                { elementId: 'risks-summary', dataPath: 'chapter6.summary', fallback: 'Comprehensive risk management approach addressing technical, market, and operational risks through diversified strategies.' },
+                { elementId: 'forecasts-title', dataPath: 'chapter7.title', fallback: 'Chapter 7: Financial Forecasts and Investment Returns' },
+                { elementId: 'forecasts-summary', dataPath: 'chapter7.summary', fallback: 'Five-year financial projections with exceptional returns and sensitivity analysis.' },
+                { elementId: 'appendix-a-title', dataPath: 'appendix_a.title', fallback: 'Appendix A: Technical Specifications' },
+                { elementId: 'appendix-a-summary', dataPath: 'appendix_a.summary', fallback: 'Detailed hardware requirements and software architecture specifications.' },
+                { elementId: 'appendix-b-title', dataPath: 'appendix_b.title', fallback: 'Appendix B: Team and Advisors' },
+                { elementId: 'appendix-b-summary', dataPath: 'appendix_b.summary', fallback: 'Core team and advisory board with extensive industry expertise.' },
+                { elementId: 'appendix-c-title', dataPath: 'appendix_c.title', fallback: 'Appendix C: Legal and Compliance Framework' },
+                { elementId: 'appendix-c-summary', dataPath: 'appendix_c.summary', fallback: 'Comprehensive legal structure and regulatory compliance across jurisdictions.' }
+            ];
+            
+            sectionMappings.forEach(mapping => {
+                const element = document.getElementById(mapping.elementId);
+                if (element) {
+                    const value = this.getNestedValue(data, mapping.dataPath);
+                    element.textContent = value || mapping.fallback;
+                }
+            });
+            
+            // Update detailed content paragraphs and subsections
+            const contentMappings = [
+                { elementId: 'opportunity-para1', dataPath: 'chapter1.section1_1.content.paragraph1', fallback: 'Asia represents 60% of global crypto adoption and houses the world\'s most sophisticated DeFi protocols, yet TAO remains largely unknown outside technical circles. While Western markets debate AI regulation, Asian entrepreneurs are building the future.' },
+                { elementId: 'opportunity-para2', dataPath: 'chapter1.section1_1.content.paragraph2', fallback: 'Our market intelligence reveals a critical window: institutional capital is seeking exposure to decentralized AI, but lacks the infrastructure and expertise to access this emerging asset class safely and efficiently.' }
+            ];
+            
+            contentMappings.forEach(mapping => {
+                const element = document.getElementById(mapping.elementId);
+                if (element) {
+                    const value = this.getNestedValue(data, mapping.dataPath);
+                    element.textContent = value || mapping.fallback;
+                }
+            });
+
+            // Update subsection headings if they exist
+            const subsectionMappings = [
+                { selector: 'h3:contains("1.1")', dataPath: 'chapter1.section1_1.title', fallback: '1.1 Asia: The Epicenter of Global Web3 Ecosystem' },
+                { selector: 'h3:contains("1.2")', dataPath: 'chapter1.section1_2.title', fallback: '1.2 TAO\'s Technical Advantages and Market Positioning' },
+                { selector: 'h3:contains("1.3")', dataPath: 'chapter1.section1_3.title', fallback: '1.3 Regulatory Environment Analysis' },
+                { selector: 'h3:contains("2.1")', dataPath: 'chapter2.section2_1.title', fallback: '2.1 Engine 1: Subnet Operations' },
+                { selector: 'h3:contains("2.2")', dataPath: 'chapter2.section2_2.title', fallback: '2.2 Engine 2: Validator Network' }
+            ];
+
+            // Update subsection headings by searching through h3 elements
+            const h3Elements = document.querySelectorAll('h3');
+            h3Elements.forEach(h3 => {
+                const text = h3.textContent;
+                subsectionMappings.forEach(mapping => {
+                    const sectionNumber = mapping.selector.match(/(\d+\.\d+)/);
+                    if (sectionNumber && text.includes(sectionNumber[1])) {
+                        const value = this.getNestedValue(data, mapping.dataPath);
+                        if (value) {
+                            h3.textContent = value;
+                        }
+                    }
+                });
+            });
+            
+            console.log('→ Content rendered successfully for language:', this.currentLanguage);
+        } catch (error) {
+            console.error('Error rendering content:', error);
         }
-        
-        console.log('→ Content rendered successfully');
+    }
+
+    getNestedValue(obj, path) {
+        return path.split('.').reduce((current, key) => {
+            return current && current[key] !== undefined ? current[key] : null;
+        }, obj);
     }
 
     updateLanguageButtons(activeLang) {
+        // Update desktop language buttons
         APP_CONFIG.SUPPORTED_LANGUAGES.forEach(lang => {
             const btn = document.getElementById(`lang-${lang}`);
             if (btn) {
@@ -131,6 +220,21 @@ class LanguageLoader {
             activeBtn.classList.remove('text-gray-600', 'dark:text-gray-400');
             activeBtn.classList.add('text-white', 'bg-gray-700');
         }
+        
+        // Update mobile language buttons  
+        APP_CONFIG.SUPPORTED_LANGUAGES.forEach(lang => {
+            const mobileBtnElement = document.getElementById(`lang-${lang}-mobile`);
+            if (mobileBtnElement) {
+                mobileBtnElement.classList.remove('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                mobileBtnElement.classList.add('border-gray-200', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+            }
+        });
+        
+        const activeMobileBtn = document.getElementById(`lang-${activeLang}-mobile`);
+        if (activeMobileBtn) {
+            activeMobileBtn.classList.remove('border-gray-200', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+            activeMobileBtn.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+        }
     }
 }
 
@@ -140,7 +244,7 @@ class LanguageLoader {
 
 class ScrollspyManager {
     constructor() {
-        this.sections = ['summary', 'opportunity', 'strategy', 'financials', 'roadmap'];
+        this.sections = ['summary', 'opportunity', 'strategy', 'financials', 'roadmap', 'risks', 'forecasts', 'appendix-a', 'appendix-b', 'appendix-c'];
         this.navLinks = {};
         this.throttleTimeout = null;
         this.init();
@@ -262,6 +366,76 @@ class ScrollspyManager {
 }
 
 // ==========================================
+// TRADINGVIEW CHART INTEGRATION
+// ==========================================
+
+class TradingViewManager {
+    constructor() {
+        this.initializeClickableStocks();
+    }
+
+    initializeClickableStocks() {
+        // Find all elements with stock ticker classes and make them clickable
+        const stockElements = document.querySelectorAll('.stock-ticker, [data-ticker]');
+        
+        stockElements.forEach(element => {
+            element.style.cursor = 'pointer';
+            element.style.textDecoration = 'underline';
+            element.style.color = '#3B82F6'; // blue-600
+            
+            element.addEventListener('click', (e) => {
+                e.preventDefault();
+                const ticker = element.dataset.ticker || element.textContent.match(/[A-Z]{2,5}/)?.[0];
+                if (ticker) {
+                    this.openTradingViewChart(ticker);
+                }
+            });
+        });
+    }
+
+    openTradingViewChart(ticker) {
+        const chartContent = `
+            <div style="height: 500px; width: 100%;">
+                <div class="tradingview-widget-container" style="height: 100%; width: 100%;">
+                    <div class="tradingview-widget-container__widget" style="height: calc(100% - 32px); width: 100%;"></div>
+                    <div class="tradingview-widget-copyright">
+                        <a href="https://www.tradingview.com/symbols/${ticker}/" rel="noopener" target="_blank">
+                            <span class="blue-text">${ticker} Chart</span>
+                        </a> by TradingView
+                    </div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+                    {
+                        "autosize": true,
+                        "symbol": "${ticker}",
+                        "interval": "D",
+                        "timezone": "Etc/UTC",
+                        "theme": "light",
+                        "style": "1",
+                        "locale": "en",
+                        "enable_publishing": false,
+                        "allow_symbol_change": true,
+                        "calendar": false,
+                        "support_host": "https://www.tradingview.com"
+                    }
+                    </script>
+                </div>
+            </div>
+        `;
+        
+        // Use PIP modal to show the chart
+        if (window.app && window.app.pipModal) {
+            window.app.pipModal.open(`${ticker} Stock Chart`, chartContent);
+        }
+    }
+
+    // Static method to manually open a chart
+    static openChart(ticker) {
+        const manager = new TradingViewManager();
+        manager.openTradingViewChart(ticker);
+    }
+}
+
+// ==========================================
 // PICTURE-IN-PICTURE MODAL SYSTEM
 // ==========================================
 
@@ -351,22 +525,23 @@ class ThemeManager {
 
     applyTheme(theme) {
         const html = document.documentElement;
-        const icon = document.getElementById('theme-icon')?.querySelector('path');
+        const desktopIcon = document.getElementById('theme-icon')?.querySelector('path');
+        const mobileIcon = document.getElementById('theme-icon-mobile')?.querySelector('path');
         
         if (theme === 'dark') {
             html.classList.add('dark');
             html.classList.remove('light');
             // Moon icon
-            if (icon) {
-                icon.setAttribute('d', 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z');
-            }
+            const moonPath = 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z';
+            if (desktopIcon) desktopIcon.setAttribute('d', moonPath);
+            if (mobileIcon) mobileIcon.setAttribute('d', moonPath);
         } else {
             html.classList.remove('dark');
             html.classList.add('light');
             // Sun icon
-            if (icon) {
-                icon.setAttribute('d', 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z');
-            }
+            const sunPath = 'M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z';
+            if (desktopIcon) desktopIcon.setAttribute('d', sunPath);
+            if (mobileIcon) mobileIcon.setAttribute('d', sunPath);
         }
         
         this.currentTheme = theme;
@@ -395,6 +570,96 @@ class CollapsibleManager {
                 icon.classList.toggle('rotate-180');
             }
         }
+    }
+}
+
+// ==========================================
+// MOBILE MENU MANAGER
+// ==========================================
+
+class MobileMenuManager {
+    static toggle() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const body = document.body;
+        
+        if (mobileMenu && hamburgerIcon && closeIcon) {
+            const isOpen = !mobileMenu.classList.contains('translate-x-full');
+            
+            if (isOpen) {
+                // Close menu
+                mobileMenu.classList.add('translate-x-full');
+                hamburgerIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                body.style.overflow = '';
+            } else {
+                // Open menu
+                mobileMenu.classList.remove('translate-x-full');
+                hamburgerIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+                body.style.overflow = 'hidden';
+            }
+        }
+    }
+    
+    static close() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
+        const body = document.body;
+        
+        if (mobileMenu && hamburgerIcon && closeIcon) {
+            mobileMenu.classList.add('translate-x-full');
+            hamburgerIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            body.style.overflow = '';
+        }
+    }
+}
+
+// ==========================================
+// DOCUMENTS MANAGER
+// ==========================================
+
+class DocumentsManager {
+    static toggleDropdown() {
+        const dropdown = document.getElementById('docs-dropdown');
+        if (dropdown) {
+            dropdown.classList.toggle('hidden');
+        }
+    }
+    
+    static closeDropdown() {
+        const dropdown = document.getElementById('docs-dropdown');
+        if (dropdown) {
+            dropdown.classList.add('hidden');
+        }
+    }
+    
+    static openMemorandum() {
+        // Get current language to determine which memorandum to show
+        const currentLang = localStorage.getItem('asiatensor-language') || 'en';
+        const langMap = {
+            'en': 'en',
+            'zh-cn': 'zh-cn', 
+            'zh-hk': 'zh-hk',
+            'ja': 'ja',
+            'ko': 'ko'
+        };
+        
+        const filename = `memorandum_${langMap[currentLang] || 'en'}.md`;
+        
+        // Open in a new window/tab to display the markdown content
+        window.open(`./content/${filename}`, '_blank');
+        
+        this.closeDropdown();
+    }
+    
+    static openDATCO() {
+        // Always show Chinese version of DATCO report as it's the primary version
+        window.open('./content/datco_report_zh-cn.md', '_blank');
+        this.closeDropdown();
     }
 }
 
@@ -443,6 +708,7 @@ class AsiatensorApp {
         this.pipModal = null;
         this.themeManager = null;
         this.printManager = null;
+        this.tradingViewManager = null;
     }
 
     async init() {
@@ -457,6 +723,7 @@ class AsiatensorApp {
             // Initialize UI components
             this.scrollspyManager = new ScrollspyManager();
             this.pipModal = new PictureInPictureModal();
+            this.tradingViewManager = new TradingViewManager();
             
             // Load initial language
             const initialLanguage = localStorage.getItem(APP_CONFIG.STORAGE_KEYS.LANGUAGE) || APP_CONFIG.DEFAULT_LANGUAGE;
@@ -477,6 +744,17 @@ class AsiatensorApp {
         window.switchLanguage = (lang) => this.languageLoader.switchLanguage(lang);
         window.toggleTheme = () => this.themeManager.toggle();
         window.toggleCollapsible = (trigger) => CollapsibleManager.toggleCollapsible(trigger);
+        window.toggleMobileMenu = () => MobileMenuManager.toggle();
+        window.toggleDocsDropdown = () => DocumentsManager.toggleDropdown();
+        window.openMemorandum = () => DocumentsManager.openMemorandum();
+        window.openDATCO = () => DocumentsManager.openDATCO();
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#docs-btn') && !e.target.closest('#docs-dropdown')) {
+                DocumentsManager.closeDropdown();
+            }
+        });
     }
 }
 
