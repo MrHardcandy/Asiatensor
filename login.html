@@ -94,12 +94,12 @@
             <!-- START: OFFICIAL TEXT-BASED LOGO & TITLE BLOCK -->
             <div class="text-center mb-8">
                 <div class="inline-flex items-center justify-center w-24 h-24 mx-auto mb-6 border-2 border-blue-600 rounded-full">
-                    <span class="text-6xl text-slate-50 font-serif" style="line-height: 0.8; margin-top: -4px;">
+                    <span class="text-6xl text-slate-50 font-serif" style="line-height: 0.8; margin-top: -1px;">
                         <span class="font-serif">α</span><span class="font-serif">τ</span>
                     </span>
                 </div>
                 <h2 class="text-3xl font-serif font-bold text-slate-50" data-key="loginTitle">
-                    <span style="vertical-align: middle; display: inline-block; margin-top: 2px;">α</span>si<span style="vertical-align: middle; display: inline-block; margin-top: 2px;">α</span><span style="vertical-align: middle; display: inline-block; margin-top: 2px;">τ</span>ensor
+                    <span style="vertical-align: baseline; display: inline-block;">α</span>si<span style="vertical-align: baseline; display: inline-block;">α</span><span style="vertical-align: baseline; display: inline-block;">τ</span>ensor
                 </h2>
                 <p class="text-sm text-gray-400 mt-1" data-key="loginSubtitle">Access Portal</p>
             </div>
@@ -236,26 +236,24 @@
                 
                 // Create white lines between nearby points
                 for (let i = 0; i < this.nodes.length; i++) {
-                    let connectionCount = 0;
-                    for (let j = i + 1; j < this.nodes.length && connectionCount < 2; j++) {
+                    for (let j = i + 1; j < this.nodes.length; j++) {
                         const distance = this.nodes[i].position.distanceTo(this.nodes[j].position);
                         
                         if (distance < this.maxDistance) {
                             const geometry = new THREE.BufferGeometry().setFromPoints([
-                                this.nodes[i].position,
-                                this.nodes[j].position
+                                this.nodes[i].position.clone(),
+                                this.nodes[j].position.clone()
                             ]);
                             
                             const material = new THREE.LineBasicMaterial({
                                 color: 0xffffff,
                                 transparent: true,
-                                opacity: 0.25
+                                opacity: 0.4
                             });
                             
                             const line = new THREE.Line(geometry, material);
                             this.connections.push(line);
                             this.scene.add(line);
-                            connectionCount++;
                         }
                     }
                 }
@@ -273,8 +271,8 @@
                     node.position.y += Math.cos(time * 1.1 + offset) * 0.2;
                 });
                 
-                // Update connections periodically
-                if (Math.floor(time * 10) % 100 === 0 && (time * 10) % 1 < 0.05) {
+                // Update connections more frequently for smoother tracking
+                if (Math.floor(time * 5) % 10 === 0 && (time * 5) % 1 < 0.1) {
                     this.updateConnections();
                 }
                 
