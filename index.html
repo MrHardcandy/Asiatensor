@@ -7,6 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="./assets/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/tradingview-charting-library@1.15.0/charting_library.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <script>
         tailwind.config = {
@@ -61,6 +62,58 @@
             background: #3B82F6;
             transform: scale(1.2);
             box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Appendix Content Styling */
+        .prose table {
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            width: 100%;
+            font-size: 0.875rem;
+        }
+
+        .prose table th,
+        .prose table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .dark .prose table th,
+        .dark .prose table td {
+            border-color: #374151;
+        }
+
+        .prose table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+
+        .dark .prose table th {
+            background-color: #1f2937;
+        }
+
+        .prose table tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+
+        .dark .prose table tbody tr:nth-child(even) {
+            background-color: #1f2937;
+        }
+
+        .prose h1, .prose h2 {
+            scroll-margin-top: 2rem;
+        }
+
+        /* Enhanced TOC styling */
+        .toc-link.active {
+            background-color: #dbeafe !important;
+            color: #1d4ed8;
+        }
+
+        .dark .toc-link.active {
+            background-color: #1e3a8a !important;
+            color: #93c5fd;
         }
         
         .bento-hover {
@@ -137,8 +190,8 @@
                         <button class="language-btn px-3 py-1 rounded bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" data-lang="en">EN</button>
                         <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="ja">JA</button>
                         <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="ko">KO</button>
-                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="cn-s">CN-S</button>
-                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="cn-t">CN-T</button>
+                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="zh-cn">简体</button>
+                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="zh-hk">繁體</button>
                     </div>
                 </div>
                 
@@ -177,11 +230,11 @@
                 <div class="text-center">
                     <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">[Language Selection]</h3>
                     <div class="grid grid-cols-3 gap-2">
-                        <button class="mobile-language-btn p-3 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" data-lang="en">[English]</button>
-                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="ja">[Japanese]</button>
-                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="ko">[Korean]</button>
-                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="cn-s">[Chinese S]</button>
-                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="cn-t">[Chinese T]</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" data-lang="en">English</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="ja">日本語</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="ko">한국어</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="zh-cn">简体中文</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="zh-hk">繁體中文</button>
                     </div>
                 </div>
             </div>
@@ -196,6 +249,7 @@
         <div class="scrollspy-dot" data-target="strategy" title="[Strategy Section]"></div>
         <div class="scrollspy-dot" data-target="financials" title="[Financial Section]"></div>
         <div class="scrollspy-dot" data-target="execution" title="[Execution Section]"></div>
+        <div class="scrollspy-dot" data-target="appendix" title="DATCO Analysis Appendix"></div>
     </nav>
 
     <!-- Main Content -->
@@ -204,11 +258,11 @@
         <!-- Executive Summary -->
         <section id="summary" class="mb-20">
             <div class="text-center mb-12">
-                <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6">
-                    [Executive Brief Title]
+                <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6" data-key="summaryTitle">
+                    Executive Summary
                 </h1>
-                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto" data-key="summarySlogan">
+                    The Public Gateway to Asia's Decentralized AI Future
                 </p>
             </div>
         </section>
@@ -217,23 +271,23 @@
         <section id="metrics" class="mb-20">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bento-hover bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 p-6 rounded-2xl border border-blue-200 dark:border-blue-800">
-                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">[Data Point 1]</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 1]</div>
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2" data-key="summaryAskValue">$7M - $8M USD</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400" data-key="summaryAskLabel">Round 1 Funding Target</div>
                 </div>
                 
                 <div class="bento-hover bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 p-6 rounded-2xl border border-green-200 dark:border-green-800">
-                    <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">[Data Point 2]</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 2]</div>
+                    <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2" data-key="summaryPrizeValue">$279M USD</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400" data-key="summaryPrizeLabel">Target Market Cap (Base Case)</div>
                 </div>
                 
                 <div class="bento-hover bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950 dark:to-violet-950 p-6 rounded-2xl border border-purple-200 dark:border-purple-800">
-                    <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">[Data Point 3]</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 3]</div>
+                    <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2" data-key="summaryEngineValue">~$89.6M USD</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400" data-key="summaryEngineLabel">Annual Profit Engine</div>
                 </div>
                 
                 <div class="bento-hover bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
-                    <div class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">[Data Point 4]</div>
-                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 4]</div>
+                    <div class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2" data-key="summaryLiquidityValue">$1.5M - $4.5M USD Daily</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400" data-key="summaryLiquidityLabel">Target Liquidity</div>
                 </div>
             </div>
         </section>
@@ -243,8 +297,8 @@
             <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800" onclick="toggleCard(this)">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
-                        <h2 class="text-3xl font-serif font-bold mb-4">[Opportunity Heading Placeholder]</h2>
-                        <p class="text-gray-600 dark:text-gray-400 text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        <h2 class="text-3xl font-serif font-bold mb-4" data-key="opportunityTitle">The Great Disconnect: Asia's Historic Opportunity</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg" data-key="opportunitySummary">Asia is the undisputed epicenter of Web3, yet the leader in Decentralized AI, Bittensor (TAO), is a virtual blank slate in the region. This presents a historic, time-sensitive arbitrage opportunity.</p>
                     </div>
                     <div class="expand-icon ml-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -286,8 +340,8 @@
             <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800" onclick="toggleCard(this)">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
-                        <h2 class="text-3xl font-serif font-bold mb-4">[Strategy Heading Placeholder]</h2>
-                        <p class="text-gray-600 dark:text-gray-400 text-lg">Sed ut perspiciatis unde omnis iste natus error sit voluptatem...</p>
+                        <h2 class="text-3xl font-serif font-bold mb-4" data-key="solutionTitle">Our Dual-Engine Profit Model: Building the AI Economy</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg" data-key="solutionSummary">Our business model is designed to create sustainable value through a dual engine: high-growth Subnet Operations and a stable, self-reinforcing Validator Node.</p>
                     </div>
                     <div class="expand-icon ml-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -439,6 +493,19 @@
                 </div>
             </div>
         </section>
+
+        <!-- Appendix Section -->
+        <section id="appendix" class="mb-16 print-break">
+            <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800">
+                <div class="text-center">
+                    <h2 class="text-3xl font-serif font-bold mb-4" data-key="appendixTitle">Digital Asset Treasury Companies (DATCOs) Analysis</h2>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg mb-6" data-key="appendixDescription">Comprehensive global analysis of business models, valuation frameworks, and market landscape</p>
+                    <button id="open-appendix-btn" data-key="appendixCta" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        View Complete Report
+                    </button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- TradingView Modal -->
@@ -455,6 +522,103 @@
                 </div>
                 <div id="chartContainer" class="h-96 p-6">
                     <!-- TradingView widget will be inserted here -->
+                </div>
+                
+                <!-- Key Metrics Section -->
+                <div id="chartMetrics" class="px-6 pb-6 border-t border-gray-200 dark:border-gray-700">
+                    <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Key Metrics</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Market Cap</p>
+                                    <p id="marketCapValue" class="text-2xl font-bold text-gray-900 dark:text-white">--</p>
+                                </div>
+                                <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg. Daily Volume</p>
+                                    <p id="avgVolumeValue" class="text-2xl font-bold text-gray-900 dark:text-white">--</p>
+                                </div>
+                                <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 00-2-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H9z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Appendix Modal -->
+    <div id="appendix-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 no-print">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-900 rounded-2xl w-full max-w-7xl h-[90vh] overflow-hidden shadow-2xl">
+                <!-- Modal Header -->
+                <div class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center z-10">
+                    <div class="flex items-center space-x-4">
+                        <h3 id="appendix-title" class="text-xl font-bold text-gray-900 dark:text-white" data-key="appendix1Title">
+                            Global Digital Asset Treasury Companies (DATCOs) Analysis
+                        </h3>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Language Switcher for Appendix -->
+                        <div class="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                            <button class="appendix-lang-btn px-3 py-1 rounded text-sm font-medium transition-colors duration-200 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" data-lang="en">EN</button>
+                            <button class="appendix-lang-btn px-3 py-1 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="ja">日</button>
+                            <button class="appendix-lang-btn px-3 py-1 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="ko">한</button>
+                            <button class="appendix-lang-btn px-3 py-1 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="zh-cn">中</button>
+                            <button class="appendix-lang-btn px-3 py-1 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-gray-700" data-lang="zh-hk">港</button>
+                        </div>
+                        <!-- Close Button -->
+                        <button id="close-appendix" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="flex h-full">
+                    <!-- Table of Contents -->
+                    <div class="w-1/4 bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
+                        <div class="p-4">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-4">Table of Contents</h4>
+                            <nav id="appendix-toc" class="space-y-2">
+                                <!-- TOC will be generated dynamically -->
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="flex-1 overflow-y-auto relative" id="appendix-scroll-container">
+                        <!-- Sticky Header Container -->
+                        <div id="sticky-header" class="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-8 py-3 hidden z-20">
+                            <h2 id="sticky-header-text" class="text-lg font-semibold text-gray-900 dark:text-white"></h2>
+                        </div>
+                        
+                        <div id="appendix-content" class="prose prose-lg dark:prose-invert max-w-none p-8">
+                            <!-- Markdown content will be rendered here -->
+                            <div class="flex items-center justify-center h-64">
+                                <div class="text-center">
+                                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                                    <p class="text-gray-600 dark:text-gray-400">Loading report...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -508,8 +672,24 @@
         
         class LanguageManager {
             constructor() {
-                this.currentLang = 'en';
+                this.currentLang = this.loadLanguageFromStorage();
                 this.bindEvents();
+                this.initializeLanguage();
+            }
+
+            loadLanguageFromStorage() {
+                const storedLang = localStorage.getItem('asiatensor-lang');
+                return storedLang || 'en';
+            }
+
+            saveLanguageToStorage(lang) {
+                localStorage.setItem('asiatensor-lang', lang);
+            }
+
+            initializeLanguage() {
+                // Set initial language state for all components
+                this.updateAllLanguageButtons();
+                console.log(`🌐 Initialized with language: ${this.currentLang}`);
             }
 
             bindEvents() {
@@ -532,8 +712,41 @@
 
             switchLanguage(lang) {
                 this.currentLang = lang;
-                // Here you would load language-specific content
-                console.log(`Switched to language: ${lang}`);
+                this.saveLanguageToStorage(lang);
+                
+                // Update all language button states
+                this.updateAllLanguageButtons();
+                
+                // Notify appendix manager if it exists
+                if (window.appendixManager) {
+                    window.appendixManager.syncLanguage(lang);
+                }
+                
+                console.log(`🌐 Switched to language: ${lang} (synchronized globally)`);
+            }
+
+            updateAllLanguageButtons() {
+                // Update main header language buttons
+                document.querySelectorAll('.language-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+                    
+                    if (btn.dataset.lang === this.currentLang) {
+                        btn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+                        btn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    }
+                });
+
+                // Update mobile language buttons
+                document.querySelectorAll('.mobile-language-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('bg-gray-100', 'dark:bg-gray-800');
+                    
+                    if (btn.dataset.lang === this.currentLang) {
+                        btn.classList.remove('bg-gray-100', 'dark:bg-gray-800');
+                        btn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    }
+                });
             }
 
             updateLanguageButtons(activeBtn) {
@@ -596,7 +809,7 @@
         
         class ScrollspyManager {
             constructor() {
-                this.sections = ['summary', 'metrics', 'opportunity', 'strategy', 'financials', 'execution'];
+                this.sections = ['summary', 'metrics', 'opportunity', 'strategy', 'financials', 'execution', 'appendix'];
                 this.bindEvents();
                 this.updateActiveSection();
             }
@@ -687,7 +900,59 @@
         class ChartModalManager {
             constructor() {
                 this.modal = document.getElementById('chartModal');
+                this.initializeCompanyData();
                 this.bindEvents();
+            }
+
+            initializeCompanyData() {
+                // Comprehensive company data store with market metrics
+                this.companyData = {
+                    'AAPL': {
+                        name: 'Apple Inc.',
+                        marketCap: '$3.45T',
+                        avgVolume: '52.3M'
+                    },
+                    'MSFT': {
+                        name: 'Microsoft Corporation',
+                        marketCap: '$3.12T',
+                        avgVolume: '24.8M'
+                    },
+                    'GOOGL': {
+                        name: 'Alphabet Inc.',
+                        marketCap: '$2.15T',
+                        avgVolume: '28.4M'
+                    },
+                    'MSTR': {
+                        name: 'Strategy Inc.',
+                        marketCap: '$118.2B',
+                        avgVolume: '15.7M'
+                    },
+                    'MARA': {
+                        name: 'MARA Holdings Inc.',
+                        marketCap: '$5.81B',
+                        avgVolume: '45.2M'
+                    },
+                    'RIOT': {
+                        name: 'Riot Platforms Inc.',
+                        marketCap: '$4.10B',
+                        avgVolume: '38.6M'
+                    },
+                    'GME': {
+                        name: 'GameStop Corp.',
+                        marketCap: '$7.50B',
+                        avgVolume: '12.3M'
+                    },
+                    'SMLR': {
+                        name: 'Semler Scientific',
+                        marketCap: '$550M',
+                        avgVolume: '2.1M'
+                    },
+                    'BMNR': {
+                        name: 'BitMine',
+                        marketCap: '$6.20B',
+                        avgVolume: '8.4M'
+                    }
+                };
             }
 
             bindEvents() {
@@ -708,8 +973,14 @@
                 });
             }
 
-            openChart(symbol) {
-                document.getElementById('chartTitle').textContent = `${symbol} Stock Chart`;
+            openChart(symbol, marketCap = null, avgVolume = null) {
+                const companyInfo = this.companyData[symbol];
+                const displayName = companyInfo ? companyInfo.name : symbol;
+                const finalMarketCap = marketCap || (companyInfo ? companyInfo.marketCap : '--');
+                const finalAvgVolume = avgVolume || (companyInfo ? companyInfo.avgVolume : '--');
+                
+                // Update title
+                document.getElementById('chartTitle').textContent = `${displayName} (${symbol})`;
                 
                 // Clear previous chart
                 const container = document.getElementById('chartContainer');
@@ -719,11 +990,30 @@
                             <div class="text-2xl font-bold mb-4">${symbol} Chart</div>
                             <div class="text-gray-600 dark:text-gray-400">
                                 [TradingView Widget Placeholder]<br>
-                                In production, this would display the actual ${symbol} chart
+                                In production, this would display the actual ${symbol} chart with real-time data
                             </div>
                         </div>
                     </div>
                 `;
+                
+                // Update metrics
+                document.getElementById('marketCapValue').textContent = finalMarketCap;
+                document.getElementById('avgVolumeValue').textContent = finalAvgVolume;
+                
+                // Add animation to metrics
+                const marketCapEl = document.getElementById('marketCapValue');
+                const avgVolumeEl = document.getElementById('avgVolumeValue');
+                
+                [marketCapEl, avgVolumeEl].forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(10px)';
+                    
+                    setTimeout(() => {
+                        el.style.transition = 'all 0.3s ease-out';
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, 150);
+                });
                 
                 this.modal.classList.remove('hidden');
             }
@@ -734,18 +1024,361 @@
         }
 
         // ==========================================
+        // APPENDIX MODAL MANAGEMENT
+        // ==========================================
+        
+        class AppendixManager {
+            constructor() {
+                this.modal = document.getElementById('appendix-modal');
+                this.contentDiv = document.getElementById('appendix-content');
+                this.tocDiv = document.getElementById('appendix-toc');
+                this.currentLang = this.loadLanguageFromStorage();
+                this.bindEvents();
+                this.updateAppendixLanguageButtons();
+            }
+
+            loadLanguageFromStorage() {
+                const storedLang = localStorage.getItem('asiatensor-lang');
+                return storedLang || 'en';
+            }
+
+            bindEvents() {
+                // Open appendix button
+                document.getElementById('open-appendix-btn').addEventListener('click', () => this.open());
+                
+                // Close appendix button
+                document.getElementById('close-appendix').addEventListener('click', () => this.close());
+                
+                // Click outside modal to close
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) this.close();
+                });
+
+                // Language switcher buttons
+                document.querySelectorAll('.appendix-lang-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const lang = e.target.dataset.lang;
+                        this.switchLanguage(lang);
+                        this.updateLanguageButtons(e.target);
+                    });
+                });
+
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.close();
+                    }
+                });
+            }
+
+            async open() {
+                this.modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
+                await this.loadContent(this.currentLang);
+            }
+
+            close() {
+                this.modal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scroll
+            }
+
+            async loadContent(lang) {
+                try {
+                    // Show loading state
+                    this.contentDiv.innerHTML = `
+                        <div class="flex items-center justify-center h-64">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                                <p class="text-gray-600 dark:text-gray-400">Loading report...</p>
+                            </div>
+                        </div>
+                    `;
+
+                    // Fetch markdown content
+                    const response = await fetch(`./assets/reports/datco-report-${lang}.md`);
+                    if (!response.ok) {
+                        throw new Error(`Failed to load report: ${response.status}`);
+                    }
+                    
+                    const markdownText = await response.text();
+                    
+                    // Convert markdown to HTML
+                    const html = marked.parse(markdownText);
+                    
+                    // Inject HTML into content area
+                    this.contentDiv.innerHTML = html;
+                    
+                    // Generate Table of Contents
+                    this.generateTOC();
+                    
+                    // Initialize smooth scrolling for TOC links
+                    this.initializeTOCScrolling();
+                    
+                    // Initialize scrollspy for TOC
+                    this.initializeTOCScrollspy();
+                    
+                    // Initialize sticky headers
+                    this.initializeStickyHeaders();
+                    
+                } catch (error) {
+                    console.error('Error loading appendix content:', error);
+                    this.contentDiv.innerHTML = `
+                        <div class="flex items-center justify-center h-64">
+                            <div class="text-center">
+                                <div class="text-red-600 mb-4">
+                                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-400">Failed to load report. Please try again.</p>
+                                <button onclick="appendixManager.loadContent('${lang}')" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Retry</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            generateTOC() {
+                const headers = this.contentDiv.querySelectorAll('h1, h2');
+                const tocHTML = Array.from(headers).map((header, index) => {
+                    const id = `appendix-header-${index}`;
+                    header.id = id;
+                    
+                    const level = header.tagName === 'H1' ? 'font-semibold text-base' : 'ml-4 text-sm';
+                    const text = header.textContent;
+                    
+                    return `
+                        <a href="#${id}" class="toc-link block py-1 px-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 ${level}">
+                            ${text}
+                        </a>
+                    `;
+                }).join('');
+                
+                this.tocDiv.innerHTML = tocHTML;
+            }
+
+            initializeTOCScrolling() {
+                document.querySelectorAll('.toc-link').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        
+                        if (targetElement) {
+                            const container = this.contentDiv.parentElement; // The scrollable container
+                            const containerRect = container.getBoundingClientRect();
+                            const elementRect = targetElement.getBoundingClientRect();
+                            
+                            // Calculate scroll position relative to the container
+                            const scrollTop = container.scrollTop + elementRect.top - containerRect.top - 20; // 20px offset
+                            
+                            container.scrollTo({
+                                top: scrollTop,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            }
+
+            initializeTOCScrollspy() {
+                const contentContainer = this.contentDiv.parentElement;
+                const headers = this.contentDiv.querySelectorAll('h1, h2');
+                
+                const updateActiveTOC = () => {
+                    const scrollTop = contentContainer.scrollTop;
+                    let activeHeader = null;
+                    
+                    // Find the current header based on scroll position
+                    headers.forEach(header => {
+                        const rect = header.getBoundingClientRect();
+                        const containerRect = contentContainer.getBoundingClientRect();
+                        const headerTop = rect.top - containerRect.top + scrollTop;
+                        
+                        if (headerTop <= scrollTop + 100) { // 100px offset
+                            activeHeader = header;
+                        }
+                    });
+                    
+                    // Update TOC active state
+                    document.querySelectorAll('.toc-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (activeHeader && link.getAttribute('href') === '#' + activeHeader.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                };
+                
+                // Listen to scroll events on the content container
+                contentContainer.addEventListener('scroll', updateActiveTOC);
+                
+                // Initial update
+                setTimeout(updateActiveTOC, 100);
+            }
+
+            initializeStickyHeaders() {
+                const scrollContainer = document.getElementById('appendix-scroll-container');
+                const stickyHeader = document.getElementById('sticky-header');
+                const stickyHeaderText = document.getElementById('sticky-header-text');
+                const headers = this.contentDiv.querySelectorAll('h1, h2');
+                
+                if (!scrollContainer || !stickyHeader || !stickyHeaderText || headers.length === 0) {
+                    return;
+                }
+
+                let currentStickyHeader = null;
+                let lastScrollTop = 0;
+
+                const updateStickyHeader = () => {
+                    const scrollTop = scrollContainer.scrollTop;
+                    const containerRect = scrollContainer.getBoundingClientRect();
+                    
+                    let newStickyHeader = null;
+                    let nextHeader = null;
+                    
+                    // Find the current sticky header and next header
+                    for (let i = 0; i < headers.length; i++) {
+                        const header = headers[i];
+                        const headerRect = header.getBoundingClientRect();
+                        const headerTop = headerRect.top - containerRect.top + scrollTop;
+                        
+                        // Check if header has passed the top
+                        if (headerTop <= scrollTop + 80) { // 80px offset for better UX
+                            // Only update if this is a higher or same level header
+                            if (!newStickyHeader || 
+                                (header.tagName === 'H1') || 
+                                (header.tagName === 'H2' && newStickyHeader.tagName !== 'H1')) {
+                                newStickyHeader = header;
+                            }
+                        }
+                        
+                        // Find the next header for transition logic
+                        if (headerTop > scrollTop + 80 && !nextHeader) {
+                            nextHeader = header;
+                        }
+                    }
+                    
+                    // Handle sticky header visibility and content
+                    if (newStickyHeader && newStickyHeader !== currentStickyHeader) {
+                        currentStickyHeader = newStickyHeader;
+                        stickyHeaderText.textContent = newStickyHeader.textContent;
+                        stickyHeader.classList.remove('hidden');
+                        
+                        // Add transition effect
+                        stickyHeader.style.opacity = '0';
+                        stickyHeader.style.transform = 'translateY(-10px)';
+                        
+                        requestAnimationFrame(() => {
+                            stickyHeader.style.transition = 'all 0.3s ease-out';
+                            stickyHeader.style.opacity = '1';
+                            stickyHeader.style.transform = 'translateY(0)';
+                        });
+                    }
+                    
+                    // Handle pushing away effect
+                    if (nextHeader && currentStickyHeader) {
+                        const nextHeaderRect = nextHeader.getBoundingClientRect();
+                        const nextHeaderTop = nextHeaderRect.top - containerRect.top + scrollTop;
+                        const stickyHeaderHeight = stickyHeader.offsetHeight;
+                        
+                        // If next header is about to overlap sticky header
+                        const pushDistance = Math.max(0, scrollTop + stickyHeaderHeight - nextHeaderTop + 80);
+                        
+                        if (pushDistance > 0) {
+                            if (pushDistance >= stickyHeaderHeight) {
+                                // Completely push away - transition to next header
+                                if (nextHeader.tagName === 'H1' || 
+                                    (nextHeader.tagName === 'H2' && currentStickyHeader.tagName !== 'H1')) {
+                                    currentStickyHeader = nextHeader;
+                                    stickyHeaderText.textContent = nextHeader.textContent;
+                                }
+                            } else {
+                                // Partial push - create sliding effect
+                                stickyHeader.style.transform = `translateY(-${pushDistance}px)`;
+                                stickyHeader.style.opacity = `${1 - (pushDistance / stickyHeaderHeight) * 0.5}`;
+                            }
+                        } else {
+                            // Reset transform when not being pushed
+                            stickyHeader.style.transform = 'translateY(0)';
+                            stickyHeader.style.opacity = '1';
+                        }
+                    }
+                    
+                    // Hide sticky header when scrolled to top
+                    if (scrollTop < 100) {
+                        stickyHeader.classList.add('hidden');
+                        currentStickyHeader = null;
+                    }
+                    
+                    lastScrollTop = scrollTop;
+                };
+
+                // Listen to scroll events
+                scrollContainer.addEventListener('scroll', updateStickyHeader);
+                
+                // Initial call
+                setTimeout(updateStickyHeader, 200);
+            }
+
+            async switchLanguage(lang) {
+                this.currentLang = lang;
+                localStorage.setItem('asiatensor-lang', lang); // Save to global storage
+                
+                // Sync with main language manager
+                if (window.languageManager) {
+                    window.languageManager.currentLang = lang;
+                    window.languageManager.updateAllLanguageButtons();
+                }
+                
+                await this.loadContent(lang);
+                console.log(`📖 Appendix switched to ${lang}, synced globally`);
+            }
+
+            updateLanguageButtons(activeBtn) {
+                document.querySelectorAll('.appendix-lang-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('hover:bg-gray-200', 'dark:hover:bg-gray-700');
+                });
+                
+                activeBtn.classList.remove('hover:bg-gray-200', 'dark:hover:bg-gray-700');
+                activeBtn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+            }
+
+            syncLanguage(lang) {
+                // Called by main language manager when language changes
+                this.currentLang = lang;
+                this.updateAppendixLanguageButtons();
+                console.log(`📖 Appendix synced to language: ${lang}`);
+            }
+
+            updateAppendixLanguageButtons() {
+                // Update appendix language switcher buttons to match current language
+                document.querySelectorAll('.appendix-lang-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('hover:bg-gray-200', 'dark:hover:bg-gray-700');
+                    
+                    if (btn.dataset.lang === this.currentLang) {
+                        btn.classList.remove('hover:bg-gray-200', 'dark:hover:bg-gray-700');
+                        btn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    }
+                });
+            }
+        }
+
+        // ==========================================
         // APPLICATION INITIALIZATION
         // ==========================================
         
         document.addEventListener('DOMContentLoaded', () => {
             new ThemeManager();
-            new LanguageManager();
+            window.languageManager = new LanguageManager(); // Make globally accessible
             new MobileMenuManager();
             new ScrollspyManager();
             new PrintManager();
             new ChartModalManager();
+            window.appendixManager = new AppendixManager(); // Make it globally accessible for error handler
             
-            console.log('Pure Aesthetic Skeleton initialized successfully');
+            console.log('🎉 Pure Aesthetic Skeleton with synchronized language system initialized successfully');
         });
     </script>
 </body>

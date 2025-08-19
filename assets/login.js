@@ -79,39 +79,46 @@ class NetworkAnimation {
     createNetworkGeometry() {
         const isMobile = window.innerWidth < 768;
         const isLowEnd = navigator.hardwareConcurrency < 4;
-        const pointCount = isMobile ? 400 : (isLowEnd ? 600 : 800);
+        const pointCount = isMobile ? 800 : (isLowEnd ? 1200 : 1500); // Enhanced Spherical Nebula
         
         const points = [];
-        const radius = 8;
+        const radius = 10; // Larger sphere
 
-        // Generate points in sphere distribution
+        // Generate points in uniform sphere distribution (Spherical Nebula)
         for (let i = 0; i < pointCount; i++) {
-            const theta = 2 * Math.PI * Math.random();
-            const phi = Math.acos(2 * Math.random() - 1);
-            const r = radius * (0.5 + 0.5 * Math.random());
+            // Use more uniform distribution for better nebula effect
+            const u = Math.random();
+            const v = Math.random();
+            const w = Math.random();
+            
+            const theta = 2 * Math.PI * u;
+            const phi = Math.acos(2 * v - 1);
+            const r = radius * Math.cbrt(w) * (0.7 + 0.3 * Math.random()); // Cube root for uniform volume
+            
             const x = r * Math.sin(phi) * Math.cos(theta);
             const y = r * Math.sin(phi) * Math.sin(theta);
             const z = r * Math.cos(phi);
             points.push(new THREE.Vector3(x, y, z));
         }
 
-        // Create points mesh
+        // Create points mesh with enhanced nebula properties
         const pointsGeometry = new THREE.BufferGeometry().setFromPoints(points);
         const pointsMaterial = new THREE.PointsMaterial({ 
             color: 0xffffff,
-            size: 0.15,
+            size: 0.12, // Slightly smaller for denser nebula effect
             sizeAttenuation: true,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.9, // Higher opacity for more visible points
+            blending: THREE.AdditiveBlending // Additive blending for glow effect
         });
         this.pointsMesh = new THREE.Points(pointsGeometry, pointsMaterial);
         this.scene.add(this.pointsMesh);
 
-        // Create connecting lines
+        // Create connecting lines with enhanced nebula network
         const linesGeometry = new THREE.BufferGeometry();
         const positions = [];
-        const maxDistance = isMobile ? 2.0 : 2.5;
-        const maxConnections = isMobile ? 3 : 5;
+        const maxDistance = isMobile ? 2.8 : 3.2; // Increased for more connections
+        const maxConnections = isMobile ? 4 : 6; // More connections for dense nebula
 
         for (let i = 0; i < pointCount; i++) {
             let connections = 0;
@@ -129,7 +136,8 @@ class NetworkAnimation {
         const linesMaterial = new THREE.LineBasicMaterial({ 
             color: 0xffffff,
             transparent: true, 
-            opacity: 0.4
+            opacity: 0.3, // Slightly lower opacity for subtle network effect
+            blending: THREE.AdditiveBlending // Additive blending for ethereal glow
         });
         this.linesMesh = new THREE.LineSegments(linesGeometry, linesMaterial);
         this.scene.add(this.linesMesh);
@@ -178,21 +186,31 @@ class NetworkAnimation {
             time += 0.01;
 
             if (this.pointsMesh && this.linesMesh) {
-                // Slow rotation
-                this.pointsMesh.rotation.x += 0.0005;
-                this.pointsMesh.rotation.y += 0.0008;
-                this.linesMesh.rotation.x += 0.0005;
-                this.linesMesh.rotation.y += 0.0008;
+                // Enhanced multi-axis rotation for living, complex network
+                this.pointsMesh.rotation.x += 0.0008;
+                this.pointsMesh.rotation.y += 0.0012;
+                this.pointsMesh.rotation.z += 0.0003; // Added Z-axis rotation
+                this.linesMesh.rotation.x += 0.0008;
+                this.linesMesh.rotation.y += 0.0012;
+                this.linesMesh.rotation.z += 0.0003;
 
-                // Subtle pulsing
-                const scale = 1 + 0.1 * Math.sin(time);
-                this.pointsMesh.scale.setScalar(scale);
-                this.linesMesh.scale.setScalar(scale);
+                // More complex pulsing with slight variation between points and lines
+                const pointScale = 1 + 0.08 * Math.sin(time * 1.2);
+                const lineScale = 1 + 0.05 * Math.sin(time * 1.5 + Math.PI / 4);
+                this.pointsMesh.scale.setScalar(pointScale);
+                this.linesMesh.scale.setScalar(lineScale);
 
-                // Gentle camera movement
-                this.camera.position.x = Math.sin(time * 0.3) * 2;
-                this.camera.position.y = Math.cos(time * 0.2) * 1;
+                // Enhanced camera movement for more dynamic viewing
+                this.camera.position.x = Math.sin(time * 0.25) * 3;
+                this.camera.position.y = Math.cos(time * 0.18) * 2;
+                this.camera.position.z = 15 + Math.sin(time * 0.1) * 2; // Subtle zoom
                 this.camera.lookAt(0, 0, 0);
+
+                // Add slight opacity animation for ethereal effect
+                if (this.pointsMesh.material && this.linesMesh.material) {
+                    this.pointsMesh.material.opacity = 0.9 + 0.1 * Math.sin(time * 2);
+                    this.linesMesh.material.opacity = 0.3 + 0.15 * Math.sin(time * 1.8 + Math.PI / 3);
+                }
             }
 
             this.renderer.render(this.scene, this.camera);
