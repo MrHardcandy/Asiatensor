@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[Login Portal] | [Company Name]</title>
-    <link rel="icon" type="image/svg+xml" href="./assets/logo-at.svg">
+    <title>Asiatensor | Access Portal</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/three@0.155.0/build/three.min.js"></script>
     
@@ -24,9 +24,7 @@
                         'mono': ['JetBrains Mono', 'monospace']
                     },
                     animation: {
-                        'pulse-slow': 'pulse 3s ease-in-out infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate'
+                        'float': 'float 6s ease-in-out infinite'
                     }
                 }
             }
@@ -37,11 +35,6 @@
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
-        }
-        
-        @keyframes glow {
-            from { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-            to { box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.3); }
         }
         
         @keyframes shake {
@@ -68,41 +61,63 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background-color: #000000;
+        }
+        
+        /* Clean, minimalist form styling */
+        .login-input {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .login-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        
+        .login-button {
+            background-color: #3B82F6;
+            transition: background-color 0.2s ease;
+        }
+        
+        .login-button:hover {
+            background-color: #2563EB;
         }
     </style>
 </head>
-<body class="bg-black text-white min-h-screen flex items-center justify-center">
+<body>
     <canvas id="networkCanvas" class="network-canvas"></canvas>
     
-    <div class="login-content w-full max-w-md mx-auto p-6">
-        <div class="text-center">
+    <div class="login-content w-full max-w-md mx-auto p-6 flex items-center justify-center min-h-screen">
+        <div class="text-center w-full">
             <!-- Logo -->
             <div class="mb-8 flex justify-center">
                 <div class="animate-float">
-                    <img src="./assets/logo-at.svg" alt="[Company Logo]" class="w-16 h-16">
+                    <img src="./assets/logo.svg" alt="Asiatensor Logo" class="w-24 h-24 mx-auto">
                 </div>
             </div>
             
             <!-- Title -->
-            <h1 class="text-4xl font-serif font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                [Company Name]
+            <h1 class="text-4xl font-serif font-bold mb-2 text-white">
+                Asiatensor
             </h1>
             <p class="text-gray-400 mb-8 text-lg">
-                [Access Portal Subtitle]
+                Access Portal
             </p>
             
             <!-- Login Form -->
             <form id="loginForm" class="space-y-6">
                 <div>
                     <label for="accessCode" class="block text-sm font-medium text-gray-300 mb-2">
-                        [Access Code Label]
+                        Access Code
                     </label>
                     <input 
                         type="password" 
                         id="accessCode" 
                         name="accessCode"
-                        class="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 backdrop-blur-sm text-white placeholder-gray-500"
-                        placeholder="[Enter Access Code]"
+                        class="login-input w-full px-4 py-3 rounded-lg outline-none transition-all duration-200 placeholder-gray-500"
+                        placeholder="Enter Access Code"
                         autocomplete="current-password"
                         required
                     >
@@ -110,13 +125,13 @@
                 
                 <button 
                     type="submit" 
-                    class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 animate-glow"
+                    class="login-button w-full text-white font-semibold py-3 px-6 rounded-lg"
                 >
-                    [Access Button Text]
+                    Access
                 </button>
                 
-                <div id="errorMessage" class="hidden text-red-400 text-sm text-center bg-red-900/20 border border-red-800 rounded-lg p-3">
-                    [Error Message Placeholder]
+                <div id="errorMessage" class="hidden text-red-500 text-sm text-center">
+                    Invalid access code. Please try again.
                 </div>
             </form>
         </div>
@@ -124,7 +139,7 @@
 
     <script>
         // Authentication System
-        const ACCESS_CODE = 'DEMO2025';
+        const ACCESS_CODE = 'TAO2025';
         
         // Check if already authenticated
         if (sessionStorage.getItem('isAuthenticated') === 'true') {
@@ -157,8 +172,8 @@
         // Auto-focus on access code input
         document.getElementById('accessCode').focus();
         
-        // Three.js Network Animation Engine
-        class NetworkAnimation {
+        // Three.js Minimalist White Points and Lines Animation
+        class MinimalistNetworkAnimation {
             constructor() {
                 this.canvas = document.getElementById('networkCanvas');
                 this.scene = new THREE.Scene();
@@ -167,21 +182,22 @@
                 
                 this.nodes = [];
                 this.connections = [];
-                this.nodeCount = 300;
-                this.maxDistance = 120;
+                this.nodeCount = 100;
+                this.maxDistance = 150;
                 
                 this.init();
                 this.animate();
             }
             
             init() {
+                // Pure black background
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.setClearColor(0x000000, 0);
+                this.renderer.setClearColor(0x000000, 1);
                 
-                // Create network nodes
-                const nodeGeometry = new THREE.SphereGeometry(1.2, 12, 12);
+                // Create white points
+                const nodeGeometry = new THREE.SphereGeometry(1, 8, 8);
                 const nodeMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0x3B82F6,
+                    color: 0xffffff,
                     transparent: true,
                     opacity: 0.8
                 });
@@ -189,14 +205,10 @@
                 for (let i = 0; i < this.nodeCount; i++) {
                     const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
                     
-                    // Spherical distribution for better visual effect
-                    const phi = Math.acos(-1 + (2 * i) / this.nodeCount);
-                    const theta = Math.sqrt(this.nodeCount * Math.PI) * phi;
-                    const radius = 200 + Math.random() * 100;
-                    
-                    node.position.x = radius * Math.cos(theta) * Math.sin(phi);
-                    node.position.y = radius * Math.sin(theta) * Math.sin(phi);
-                    node.position.z = radius * Math.cos(phi);
+                    // Random distribution across the screen
+                    node.position.x = (Math.random() - 0.5) * 1000;
+                    node.position.y = (Math.random() - 0.5) * 600;
+                    node.position.z = (Math.random() - 0.5) * 300;
                     
                     this.nodes.push(node);
                     this.scene.add(node);
@@ -223,10 +235,10 @@
                 });
                 this.connections = [];
                 
-                // Create new connections based on proximity
+                // Create white lines between nearby points
                 for (let i = 0; i < this.nodes.length; i++) {
                     let connectionCount = 0;
-                    for (let j = i + 1; j < this.nodes.length && connectionCount < 3; j++) {
+                    for (let j = i + 1; j < this.nodes.length && connectionCount < 2; j++) {
                         const distance = this.nodes[i].position.distanceTo(this.nodes[j].position);
                         
                         if (distance < this.maxDistance) {
@@ -236,9 +248,9 @@
                             ]);
                             
                             const material = new THREE.LineBasicMaterial({
-                                color: 0x06B6D4,
+                                color: 0xffffff,
                                 transparent: true,
-                                opacity: 0.4 * (1 - distance / this.maxDistance)
+                                opacity: 0.1
                             });
                             
                             const line = new THREE.Line(geometry, material);
@@ -253,26 +265,17 @@
             animate() {
                 requestAnimationFrame(() => this.animate());
                 
-                const time = Date.now() * 0.0005;
+                const time = Date.now() * 0.0002;
                 
-                // Smooth rotation of entire network
-                this.scene.rotation.x = Math.sin(time * 0.3) * 0.1;
-                this.scene.rotation.y += 0.003;
-                this.scene.rotation.z = Math.cos(time * 0.2) * 0.1;
-                
-                // Subtle node animation
+                // Subtle movement of points
                 this.nodes.forEach((node, index) => {
                     const offset = index * 0.1;
-                    node.position.x += Math.sin(time + offset) * 0.3;
-                    node.position.y += Math.cos(time * 1.1 + offset) * 0.3;
-                    node.position.z += Math.sin(time * 0.8 + offset) * 0.3;
-                    
-                    // Pulsing effect
-                    node.scale.setScalar(1 + Math.sin(time * 2 + offset) * 0.1);
+                    node.position.x += Math.sin(time + offset) * 0.2;
+                    node.position.y += Math.cos(time * 1.1 + offset) * 0.2;
                 });
                 
-                // Update connections every few seconds
-                if (Math.floor(time * 2) % 5 === 0 && (time * 2) % 1 < 0.05) {
+                // Update connections periodically
+                if (Math.floor(time * 10) % 100 === 0 && (time * 10) % 1 < 0.05) {
                     this.updateConnections();
                 }
                 
@@ -280,8 +283,8 @@
             }
         }
         
-        // Initialize the beautiful network animation
-        new NetworkAnimation();
+        // Initialize the minimalist white points and lines animation
+        new MinimalistNetworkAnimation();
     </script>
 </body>
 </html>
