@@ -91,20 +91,21 @@
     
     <div class="login-content w-full max-w-md mx-auto p-6 flex items-center justify-center min-h-screen">
         <div class="text-center w-full">
-            <!-- Logo -->
-            <div class="mb-8 flex justify-center">
-                <div class="animate-float">
-                    <img src="./assets/logo.svg" alt="Asiatensor Logo" class="w-24 h-24 mx-auto">
-                </div>
-            </div>
-            
-            <!-- Title -->
-            <h1 class="text-4xl font-serif font-bold mb-2 text-white">
-                Asiatensor
-            </h1>
-            <p class="text-gray-400 mb-8 text-lg">
-                Access Portal
-            </p>
+            <!-- START: OFFICIAL ατ SVG LOGO -->
+            <svg width="96" height="96" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <style>
+                    .at-circle { stroke: #3B82F6; stroke-width: 2; }
+                    .at-glyph { stroke: #E5E7EB; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+                </style>
+                <circle class="at-circle" cx="50" cy="50" r="48"/>
+                <!-- Greek Alpha (α) Path -->
+                <path class="at-glyph" d="M38 68 C 38 60, 42 55, 48 55 C 54 55, 58 60, 58 68 C 58 75, 54 78, 48 78 C 42 78, 38 75, 38 68 Z M 58 68 L 62 72"/>
+                <!-- Greek Tau (τ) Path -->
+                <path class="at-glyph" d="M68 48 C 72 52, 75 58, 75 65 L 75 75 M 65 55 L 85 55"/>
+            </svg>
+            <!-- END: OFFICIAL ατ SVG LOGO -->
+            <h2 class="mt-4 text-2xl font-bold text-slate-50" data-key="loginTitle">Asiatensor</h2>
+            <p class="text-sm text-gray-400" data-key="loginSubtitle">Access Portal</p>
             
             <!-- Login Form -->
             <form id="loginForm" class="space-y-6">
