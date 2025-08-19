@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asiatensor 投資覚書</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1F2937;
+            background-color: #FFFFFF;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .main-title {
+            font-family: 'Source Serif Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #000000;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-family: 'Source Serif Pro', serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: #1F2937;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .document-meta {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: #F9FAFB;
+            border-radius: 8px;
+        }
+
+        .document-meta p {
+            margin-bottom: 0.5rem;
+        }
+
+        .disclaimer {
+            background-color: #F9FAFB;
+            border-left: 4px solid #2563EB;
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-style: italic;
+        }
+
+        .section-title {
+            font-family: 'Source Serif Pro', serif;
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: #000000;
+            margin: 3rem 0 1.5rem 0;
+        }
+
+        .chapter-title {
+            font-family: 'Source Serif Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #000000;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .insight-card {
+            background-color: #F9FAFB;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #E5E7EB;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .bento-box {
+            background-color: #F9FAFB;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #E5E7EB;
+            text-align: center;
+        }
+
+        .bento-label {
+            font-size: 0.75rem;
+            color: #6B7280;
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .bento-value {
+            font-family: 'Source Serif Pro', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563EB;
+        }
+
+        .executive-summary {
+            margin: 2rem 0;
+        }
+
+        .executive-summary h3 {
+            font-family: 'Source Serif Pro', serif;
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 1rem;
+        }
+
+        .executive-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .executive-item strong {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        th {
+            background-color: #F9FAFB;
+            font-weight: 600;
+            color: #000000;
+            font-size: 0.875rem;
+        }
+
+        td {
+            font-size: 0.875rem;
+        }
+
+        tr:hover {
+            background-color: #F9FAFB;
+        }
+
+        ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #E5E7EB;
+            margin: 3rem 0;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            th, td {
+                padding: 8px 12px;
+            }
+        }
+
+        @media print {
+            body {
+                font-size: 14px;
+            }
+            
+            .insight-card {
+                break-inside: avoid;
+            }
+            
+            .section-title {
+                break-after: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Asiatensor 投資覚書</h1>
+        <p class="subtitle">アジアにおける次世代分散型AI上場企業構築に関する投資提案書</p>
+        
+        <div class="document-meta">
+            <p><strong>日付:</strong> 2025年8月18日</p>
+            <p><strong>資金調達主体:</strong> Asiatensor Japan LPS（有限合伙会社）</p>
+        </div>
+
+        <div class="disclaimer">
+            <p><strong>免責事項:</strong> 本文書は参考目的のみであり、いかなる形式の投資アドバイス、申し込み、または申し込みの勧誘を構成するものではありません。本文書には将来予測に関する記述が含まれており、リスクと不確実性を伴い、実際の結果は記述と異なる可能性があります。すべての投資決定は、独立したデューデリジェンスと専門的意見に基づいて行うべきです。</p>
+        </div>
+
+        <div class="executive-summary">
+            <h2 class="section-title">エグゼクティブサマリー</h2>
+            
+            <div class="bento-grid">
+                <div class="bento-box">
+                    <div class="bento-label">第1回調達目標</div>
+                    <div class="bento-value">$7M - $8M</div>
+                </div>
+                <div class="bento-box">
+                    <div class="bento-label">目標時価総額</div>
+                    <div class="bento-value">$2.79億</div>
+                </div>
+                <div class="bento-box">
+                    <div class="bento-label">予想年間利益</div>
+                    <div class="bento-value">$8,960万</div>
+                </div>
+                <div class="bento-box">
+                    <div class="bento-label">潜在リターン</div>
+                    <div class="bento-value">約28倍</div>
+                </div>
+            </div>
+
+            <div class="executive-item">
+                <p><strong>1. プロジェクトポジショニング:</strong><br>
+                Asiatensorは、アジア最大手の<strong>分散型人工知能上場企業</strong>、およびBittensor（TAO）を中核資産とする地域最重要の<strong>デジタル資産財政会社（DATCO）</strong>となることを目指しています。我々は資産を受動的に保有するだけの従来モデルとは本質的に異なる、<strong>能動的な「アルファ収益創出」能力を持つ次世代DATCO</strong>です。</p>
+            </div>
+
+            <div class="executive-item">
+                <p><strong>2. 中核ビジネスモデル:</strong><br>
+                我々は資産を受動的に保有するのではなく、<strong>「技術運営」</strong>（サブネットとバリデーターノードを能動的に運営し、200%を超えるROIで継続的に新しいTAOを獲得）と<strong>「資産増価」</strong>（保有するTAO資産の市場成長）の双輪駆動により、複合価値を創造します。</p>
+            </div>
+
+            <div class="executive-item">
+                <p><strong>3. 壮大な物語と市場機会:</strong><br>
+                我々は歴史的で時間的制約のある巨大な裁定機会の捕獲を目指しています。<strong>分散型AIの世界的リーダーであるBittensor（TAO）を、その価値がまだ真空状態にある世界最大のWeb3市場であるアジアに導入する</strong>ことです。我々はTAO供給半減という重大な触媒が爆発する重要な瞬間に、アジア資本と世界トップクラスのAIインフラを結ぶ唯一の上場旗艦となります。</p>
+            </div>
+
+            <div class="executive-item">
+                <p><strong>4. 上場経路:</strong><br>
+                我々は日本市場において資本効率が極めて高い<strong>「三段階戦略協力上場」</strong>を実施します。このモデルは第三者割当増資を通じて、我々が投入する<strong>1,800万ドル</strong>の資金を100%上場企業の事業発展に投入し、既存株主の株式取得には使用しない、安全で効率的な方式です。</p>
+            </div>
+
+            <div class="executive-item">
+                <p><strong>5. 中核財務予測（基本シナリオ）:</strong></p>
+                <ul>
+                    <li><strong>総資金調達目標:</strong> 約2,000万ドル（段階的完了）</li>
+                    <li><strong>第1回資金調達目標（日本LPS向け）:</strong> <strong>700万～800万ドル</strong></li>
+                    <li><strong>目標時価総額（半減後時代）:</strong> <strong>2億7,900万ドル</strong></li>
+                    <li><strong>予想年間利益（TAOベース）:</strong> <strong>約112,000 TAO</strong>（約8,960万ドル相当）</li>
+                    <li><strong>初期投資家への潜在リターン:</strong> <strong>約28倍</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="insight-card">
+            <h2 class="section-title">第1章：投資論点：完璧なストーム</h2>
+            
+            <h3 class="chapter-title">1.1 DATCOの進化：受動的「ベータ」から能動的「アルファ」へ</h3>
+            <p>デジタル資産財政会社（DATCOs）は、伝統的金融と暗号世界を結ぶ重要な架け橋となっています。MicroStrategy（MSTR）と日本のMetaplanet（3350.T）に代表される<strong>第一世代DATCO</strong>は、ビットコインの「株式化」に成功し、機関投資家にコンプライアント投資エクスポージャーを提供しました。その価値は主に保有資産の価格変動に由来し、<strong>純粋なベータ投資</strong>です。</p>
+            
+            <p><strong>Asiatensor</strong>は<strong>第二世代DATCO</strong>の進化方向を代表します。我々はTAOという中核資産を保有するだけでなく、より重要なことに、Bittensorネットワークから継続的に新しいTAOを獲得する<strong>能動的で高利益の技術運営能力</strong>を持っています。これにより、受動的な「ベータ」代理から、内生的成長動力を持つ、能動的に<strong>「アルファ収益」を創出</strong>できる技術企業へと変貌します。</p>
+
+            <h3 class="chapter-title">1.2 巨大な乖離：アジアのWeb3中心地位とTAOの価値真空</h3>
+            <p>アジアは議論の余地なくWeb3世界の重要市場であり、その深い資本プール、成熟した個人投資家、技術革新への巨大な熱意で知られています。しかし、分散型AIの絶対的リーダーであるBittensor（TAO）は、アジア市場ではほぼ空白状態です。TAOはBinanceとCoinbaseに上場し巨大な取引量を持っているにもかかわらず、アジア最活発な資本市場である<strong>日本、韓国、香港の規制準拠取引所は、いずれもTAO取引を開始していません</strong>。</p>
+            
+            <p>この「乖離」はTAOの弱点ではなく、<strong>先行者のために準備された歴史的な巨大裁定機会</strong>なのです。</p>
+
+            <h3 class="chapter-title">1.3 重大な触媒：目前に迫ったTAO供給半減</h3>
+            <p>この巨大な価値の窪地は、重大な触媒が到来する時期と重なっています：<strong>2月2日のTAO供給半減</strong>。これは確実で、需給関係に深刻な影響を与えるデフレーション事象であり、市場では一般的にTAOの希少性と本質的価値の大幅な向上をもたらすと予想されています。</p>
+
+            <h3 class="chapter-title">1.4 Asiatensorの使命：アジアの旗艦となること</h3>
+            <p>Asiatensorの使命は、<strong>Bitensorをアジアに導入する旗艦</strong>となり、半減触媒が爆発する重要な瞬間に、アジア資本とユーザーをTAO生態系に導くことです。我々の成功は必然的にTAOの全体価値を押し上げ、TAOが我々の最中核資産として、その価値成長がAsiatensorの貸借対照表に直接反映され、強力で自己実現的な価値フライホイールを形成します。</p>
+            
+            <p><strong>Asiatensorへの投資は単なる企業への投資ではなく、「TAOのアジア市場での0から1への歩み」という確実性の極めて高い壮大な物語に賭けることです。</strong></p>
+        </div>
+
+        <div class="insight-card">
+            <h2 class="section-title">第2章：ビジネスモデルと中核障壁</h2>
+            
+            <h3 class="chapter-title">2.1 双輪駆動価値創造エンジン</h3>
+            <p>我々のビジネスモデルは、高い技術障壁を持つ持続可能な価値創造システムの構築を目指しています。</p>
+            
+            <p><strong>エンジン1：サブネット運営（高成長利益コア）</strong><br>
+            我々はこの新興AI経済における<strong>「トップデベロッパー」</strong>としての役割を担います。高価値の商業領域（金融、バイオテクノロジー、分散科学など）を特定し、その領域専用の「デジタル不動産」である<strong>サブネット</strong>を構築・運営します。</p>
+            
+            <p>これらの中核インフラの所有者として、我々は各サブネットが日々生成するTAOの18%を利益として受け取ります。開始後1～2年以内にサブネット運営規模を<strong>10～30個</strong>に拡大することが目標です。これは指数関数的に成長する高利益率TAO収益流（予想ROI > 200%）をもたらすだけでなく、最も重要な将来のAI応用シナリオに深く組み込まれることを可能にします。</p>
+
+            <p><strong>エンジン2：トップティアバリデーターノード（自己強化キャッシュカウ）</strong><br>
+            我々は同時にBittensorネットワークセキュリティと完全性の<strong>「基盤守護者」</strong>でもあります。トップティアバリデーターノードを運営することで、ネットワークのセキュリティを保障し、ステークしたTAO資産に対して<strong>10～20%の安定した年間利回り（APY）</strong>を獲得できます。</p>
+            
+            <p>その核心は<strong>「フライホイール効果」</strong>にあります：「サブネット運営」（損益計算書成長）で獲得したTAO利益は、継続的かつ戦略的に我々の「バリデーターノード」（貸借対照表成長）に注入されます。これは強力で自己強化的な金融フライホイールを創造し、資産基盤を継続的に複利成長させながら、エコシステム全体における我々のガバナンス影響力を固めます。</p>
+
+            <h3 class="chapter-title">2.2 複製不可能な中核競争障壁（不公平な優位性）</h3>
+            <p><strong>障壁1：政府協力とマクロトレンド—順風戦略障壁</strong><br>
+            我々は技術だけでなく、アジアのマクロ発展脈絡への深い理解も持っています。我々は<strong>複数の日本地方政府</strong>と「都市AIクラスター」プロジェクトについて深い協力を行い、我々の分散AI技術を日本の新興<strong>「量子都市」構想</strong>および<strong>「地方創生2.0」国家戦略</strong>と深く結合させています。</p>
+            
+            <p>これにより我々は単なる商業プロジェクトではなく、<strong>日本地方経済のデジタル変革の推進者および技術パートナー</strong>となります。この国家戦略と同調するポジショニングは、どの競合他社も複製できない深い政府関係と市場アクセス護城河を構築します。</p>
+
+            <p><strong>障壁2：トップクラスの技術力と生態系地位—反駁不可能なリーダー</strong><br>
+            Bittensorの技術ハードルは極めて高く、我々はこの分野の絶対的リーダーです。</p>
+            
+            <ul>
+                <li><strong>実戦検証された運営能力:</strong> 現在Bittensorネットワーク全体にある128のサブネットのうち、我々は<strong>2つを成功裏に自営</strong>するだけでなく、専門知識により<strong>他の5つのサブネットチームに深いコンサルティング支援</strong>を提供しています。我々の実戦経験はアクティブネットワークの約6%をカバーしており、この深さと広さは極めて稀です。</li>
+                <li><strong>深いエコシステム関係:</strong> 我々は<strong>Opentensor Foundation</strong>およびシリコンバレーのトップToken Fundである<strong>DCG、Polychain、DAO5</strong>など、Bittensor生態系のトップ参加者と密接な協力関係を維持しています。これにより我々は常に生態系発展の最前線にいることができ、最高レベルの資本と戦略資源にアクセスできます。</li>
+            </ul>
+        </div>
+
+        <div class="insight-card">
+            <h2 class="section-title">第3章：市場検証と上場経路</h2>
+            
+            <h3 class="chapter-title">3.1 グローバル市場の明確な先例</h3>
+            <p>我々の戦略は空中楼閣ではなく、グローバル資本市場の深い分析に基づいています。</p>
+            
+            <p><strong>国際TAOコンセプト上場企業</strong></p>
+            <ul>
+                <li>NASDAQにおける<strong>TAO Synergies（TAOX）</strong>と<strong>Oblong（OBLG）</strong>の成功は、TAOナラティブが極端な市場注目度と取引活動を創造できることを力強く証明しています。</li>
+                <li>スウェーデンでの<strong>Safello（SFL.ST）</strong>のコンプライアント運営は、欧州市場でのTAOサブネット資産の合法性を証明しています。</li>
+                <li>カナダでの<strong>Adrianna Ventures / XTAO</strong>の計画は、マルチサブネット資産モデルが世界的に迅速に複製されていることを証明しています。</li>
+            </ul>
+            
+            <p><strong>東アジア市場の「ブロックチェーン」上場企業</strong></p>
+            <ul>
+                <li>日本での<strong>Metaplanet（3350.T）</strong>の巨大な成功は、ターゲット市場での我々の「暗号財政」モデルの実現可能性について最も強力な証拠を提供しています。</li>
+                <li><strong>Wemade</strong>に代表される韓国企業は、本土Web3ストーリーがアジア市場で数億ドルの評価と極めて高い流動性を獲得できることを示しています。</li>
+            </ul>
+
+            <h3 class="chapter-title">3.2 上場経路：日本市場での戦略協力上場</h3>
+            <p>我々の上場戦略は東京証券取引所に焦点を当て、<strong>資本効率が極めて高く構造化された</strong>アプローチを採用します。従来の「借壳」ではなく、適切な上場テクノロジー企業との<strong>業績ベースの戦略的合併</strong>を追求します。</p>
+            
+            <p>このプロセスは一連の<strong>第三者割当増資</strong>を通じて実行され、<strong>2025年内に全3回の完了を計画</strong>しています。このモデルは、我々の資金が既存株主の株式取得ではなく、<strong>100%直接企業成長の推進に使用される</strong>ことを保証します。</p>
+            
+            <ul>
+                <li><strong>第1回（参入）:</strong> <strong>600万ドル</strong>投入 → <strong>20%</strong>株式取得。</li>
+                <li><strong>第2回（拡張）:</strong> <strong>700万ドル</strong>投入 → 累計<strong>約42%</strong>株式（第1段階業績達成後）。</li>
+                <li><strong>第3回（支配）:</strong> <strong>500万ドル</strong>投入 → 最終<strong>60%</strong>支配株式（第2段階業績達成後）。</li>
+            </ul>
+            
+            <p><strong>この経路は安全で安定しており、我々の日本現地化戦略と完璧に一致します。</strong></p>
+        </div>
+
+        <div class="insight-card">
+            <h2 class="section-title">第4章：財務予測とリターン分析</h2>
+            
+            <p>我々の評価モデルは、技術運営を通じて<strong>能動的に新しいTAOを創造する</strong>能力に基づいており、これは比較対象企業が持たない中核優位性です。</p>
+            
+            <h3 class="chapter-title">4.1 中核パラメータ前提</h3>
+            <ul>
+                <li><strong>初期TAO保有:</strong> 13,100 TAO（第1回資金調達と会社自己資金の合計）。</li>
+                <li><strong>年間TAO産出（営業利益）:</strong> <strong>15のサブネット</strong>（10～30の中間値）運営という規模化目標に基づき、年産出<strong>約112,000 TAO</strong>と保守的に推定。</li>
+            </ul>
+
+            <h3 class="chapter-title">4.2 評価予測マトリックス（半減後時代）</h3>
+            <p>我々の価格予測は、<strong>2月2日TAO供給半減</strong>のデフレーション効果を考慮したより現実的なベースラインに基づいています。</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>シナリオ分析</th>
+                        <th>TAO価格（USD）</th>
+                        <th>営業プレミアム倍数</th>
+                        <th>会社総時価総額（推計）</th>
+                        <th>初期総投資に対する潜在リターン</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>保守シナリオ</strong></td>
+                        <td>$600</td>
+                        <td>2倍</td>
+                        <td><strong>1億4,200万ドル</strong></td>
+                        <td><strong>約8倍</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>基本シナリオ</strong></td>
+                        <td>$800</td>
+                        <td>3倍</td>
+                        <td><strong>2億7,900万ドル</strong></td>
+                        <td><strong>約15.5倍</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>楽観シナリオ</strong></td>
+                        <td>$1,600</td>
+                        <td>5倍</td>
+                        <td><strong>9億1,700万ドル</strong></td>
+                        <td><strong>約51倍</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <p><em>注：営業プレミアム倍数は高技術・高障壁企業の評価モデルを参考とし、DATCOsに一般的に存在するNAVプレミアムと結合。ここでは保守的倍数を採用。</em></p>
+
+            <h3 class="chapter-title">4.3 上場後パフォーマンス予測と利益サマリー</h3>
+            <ul>
+                <li><strong>予想年間利益:</strong> 基本シナリオで年間利益<strong>約8,960万ドル</strong>を予想。
+                    <p><em>この予測はTAO中核事業産出のみを含み、計画中の日本政府契約およびB2C製品の直接収益は含まず、これらは巨大な追加上昇潜在力を代表します。</em></p>
+                </li>
+                <li><strong>目標時価総額:</strong> 基本シナリオで、上場後の安定時価総額は<strong>2億5,000万～3億ドル</strong>に達すると予想。</li>
+                <li><strong>予想日平均取引量:</strong> この時価総額で、上場後の日平均取引額は<strong>150万～450万ドル</strong>で安定し、すべての投資家に優れた流動性を提供すると予想。</li>
+            </ul>
+        </div>
+
+        <div class="insight-card">
+            <h2 class="section-title">第5章：資金調達計画</h2>
+            
+            <h3 class="chapter-title">5.1 資金調達主体と目標</h3>
+            <ul>
+                <li><strong>資金調達主体:</strong> <strong>Asiatensor Japan LPS（有限合伙会社）</strong></li>
+                <li><strong>総資金調達目標:</strong> <strong>約2,000万ドル</strong>（3段階上場経路を通じて分割して上場企業に注入）。</li>
+                <li><strong>第1回資金調達目標:</strong> <strong>700万～800万ドル</strong>。</li>
+            </ul>
+
+            <h3 class="chapter-title">5.2 第1回資金使途明細</h3>
+            <p><strong>1. 第1段階戦略投資（600万ドル）:</strong></p>
+            <ul>
+                <li>日本上場企業への第1回第三者割当増資完了、20%の初期株式取得に使用。</li>
+                <li>この資金は上場企業の運営資本として、Asiatensor中核事業の開始専用に使用され、その予算はルートネットワークバリデーター登録、dTAO時価総額管理ファンドおよびその他運営準備金等の中核ニーズを完全にカバーします。</li>
+            </ul>
+            
+            <p><strong>2. Asiatensor持株会社運営準備金（100万～200万ドル）:</strong></p>
+            <ul>
+                <li>この資金調達ラウンドおよび上場取引完了前のチーム運営、日本有限合伙（LPS）設立、法的顧問、デューデリジェンス等各種費用をカバーするために使用。</li>
+            </ul>
+        </div>
+
+        <div class="insight-card">
+            <h2 class="section-title">第6章：ご招待</h2>
+            
+            <p>Asiatensorは単なる投資機会ではありません。それは<strong>構造的で時間制約のある戦略的ポジショニング</strong>です。我々は完璧な合流点に立っています：革命的技術（Bittensor）、価値がまだ発見されていない巨大市場（アジア）、目前に迫った重大触媒（TAO半減）、そして複製不可能な優位性を持つトップクラスのチーム。</p>
+            
+            <p>我々はAsiatensorに参加し、アジアの歴史的AI投資機会を共に掴み、この企業をこの分野における議論の余地なき、数十億ドル規模の上場リーダーに育てることを心よりお誘いいたします。</p>
+        </div>
+    </div>
+</body>
+</html>
