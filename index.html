@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asiatensor Executive Brief - Working Version</title>
-    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+    <title>[Executive Brief] | [Company Name]</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/logo-at.svg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/tradingview-charting-library@1.15.0/charting_library.min.js"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#06B6D4',
+                        accent: '#8B5CF6'
+                    },
                     fontFamily: {
                         'sans': ['Inter', 'system-ui', 'sans-serif'],
                         'serif': ['Source Serif Pro', 'serif'],
@@ -20,1366 +27,722 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'Source Serif Pro', serif; }
-        .collapsible-content { 
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        .collapsible-icon { 
-            transition: transform 0.3s ease;
-        }
-        .collapsible-icon.rotate-180 { 
-            transform: rotate(180deg);
+        @media print {
+            .no-print { display: none !important; }
+            .expand-for-print { display: block !important; }
+            .print-break { page-break-before: always; }
+            body { background: white !important; color: black !important; }
+            .dark\:bg-gray-900 { background: white !important; }
+            .dark\:text-white { color: black !important; }
         }
         
-        /* Picture-in-Picture Modal Styles */
-        .company-link, .tao-link {
-            display: inline;
-            background: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-            font: inherit;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .company-link:hover, .tao-link:hover {
-            text-decoration: none;
-        }
-        
-        #pip-modal {
-            backdrop-filter: blur(8px);
-            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        #pip-modal.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        #pip-modal:not(.hidden) {
-            opacity: 1;
-        }
-        
-        #pip-modal .bg-white {
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        #pip-modal:not(.hidden) .bg-white {
-            transform: scale(1);
-        }
-        
-        #pip-modal .animate-spin {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Custom scrollbar styles for Webkit browsers */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(156, 163, 175, 0.1);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(156, 163, 175, 0.4);
-            border-radius: 4px;
-            transition: background 0.2s ease;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(156, 163, 175, 0.6);
-        }
-        
-        .dark ::-webkit-scrollbar-track {
-            background: rgba(75, 85, 99, 0.1);
-        }
-        
-        .dark ::-webkit-scrollbar-thumb {
-            background: rgba(75, 85, 99, 0.4);
-        }
-        
-        .dark ::-webkit-scrollbar-thumb:hover {
-            background: rgba(75, 85, 99, 0.6);
-        }
-
-        /* Enhanced Bento Box Styles */
-        .bento-box {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .bento-box:hover {
-            border-color: rgba(59, 130, 246, 0.5);
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25), 0 0 20px rgba(59, 130, 246, 0.15);
-        }
-        
-        .metric-value {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .dark .bg-white,
-        .dark body { background-color: #000000; }
-        .dark .text-gray-800 { color: #e5e7eb; }
-        
-        .dark .bento-box {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
-            border: 1px solid rgba(59, 130, 246, 0.25);
-        }
-
-        /* Scrollspy Navigation Styles */
-        #scrollspy-nav {
+        .scrollspy-nav {
             position: fixed;
-            right: 1.5rem;
+            right: 2rem;
             top: 50%;
             transform: translateY(-50%);
             z-index: 40;
         }
         
-        #scrollspy-nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        #scrollspy-nav a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            group: true;
-        }
-        
-        #scrollspy-nav .dot {
-            width: 8px;
-            height: 8px;
+        .scrollspy-dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: rgba(156, 163, 175, 0.5);
-            border: 2px solid rgba(156, 163, 175, 0.3);
+            border: 2px solid transparent;
+            cursor: pointer;
             transition: all 0.3s ease;
-            margin-right: 0.75rem;
+            margin: 8px 0;
         }
         
-        #scrollspy-nav a:hover .dot {
-            background: rgba(59, 130, 246, 0.8);
-            border-color: rgba(59, 130, 246, 0.5);
+        .scrollspy-dot.active {
+            background: #3B82F6;
             transform: scale(1.2);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
         }
         
-        #scrollspy-nav a.active .dot {
-            background: #3b82f6;
-            border-color: #3b82f6;
-            transform: scale(1.3);
-        }
-        
-        #scrollspy-nav .label {
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            transform: translateX(10px);
+        .bento-hover {
             transition: all 0.3s ease;
-            pointer-events: none;
         }
         
-        .dark #scrollspy-nav .label {
-            background: rgba(255, 255, 255, 0.9);
-            color: #1f2937;
+        .bento-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
         
-        #scrollspy-nav a:hover .label {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Loading State Styles */
-        .content-loading {
-            opacity: 0.5;
-            transition: opacity 0.3s ease;
+        .insight-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
         
-        #loading-spinner {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
+        .insight-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
         
-        .loading-logo {
-            animation: spin 1s linear infinite;
+        .expand-icon {
+            transition: transform 0.3s ease;
         }
-
-        /* Print Styles */
-        @media print {
-            /* Hide UI elements */
-            header, footer, #scrollspy-nav, #pip-modal, 
-            button, .theme-toggle, .language-switcher,
-            #print-btn, #loading-spinner {
-                display: none !important;
-            }
-            
-            /* Force expand all content */
-            .collapsible-content, .hidden {
-                display: block !important;
-                opacity: 1 !important;
-            }
-            
-            .collapsible-icon {
-                display: none !important;
-            }
-            
-            /* Force light theme */
-            body, .dark {
-                background-color: #ffffff !important;
-                color: #000000 !important;
-            }
-            
-            .dark .text-gray-300,
-            .dark .text-gray-400,
-            .dark .text-slate-50 {
-                color: #000000 !important;
-            }
-            
-            .dark .bg-black,
-            .dark .bg-gray-900,
-            .dark .bg-gray-800 {
-                background-color: #ffffff !important;
-            }
-            
-            /* Optimize typography */
-            body {
-                font-size: 12pt;
-                line-height: 1.4;
-            }
-            
-            h1 { font-size: 24pt; }
-            h2 { font-size: 18pt; }
-            h3 { font-size: 16pt; }
-            h4 { font-size: 14pt; }
-            
-            /* Remove shadows and complex styling */
-            .bento-box, .bg-gray-100, .bg-gray-50 {
-                background: #f8f9fa !important;
-                border: 1px solid #dee2e6 !important;
-                box-shadow: none !important;
-            }
-            
-            /* Page breaks */
-            .page-break {
-                page-break-before: always;
-            }
-            
-            /* Prevent breaking inside sections */
-            section {
-                break-inside: avoid;
-                margin-bottom: 2rem;
-            }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            #scrollspy-nav {
-                display: none;
-            }
+        
+        .expand-icon.rotated {
+            transform: rotate(180deg);
         }
     </style>
 </head>
+<body class="bg-white dark:bg-black text-gray-900 dark:text-white">
+    <!-- Authentication Check -->
+    <script>
+        if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = './login.html';
+        }
+    </script>
 
-<body class="bg-white text-gray-800 font-sans dark:bg-black dark:text-gray-300">
-
-    <!-- FLOATING SCROLLSPY NAVIGATION -->
-    <nav id="scrollspy-nav">
-        <ul>
-            <li>
-                <a href="#summary" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Executive Summary</span>
-                </a>
-            </li>
-            <li>
-                <a href="#opportunity" class="group">
-                    <span class="dot"></span>
-                    <span class="label">The Opportunity</span>
-                </a>
-            </li>
-            <li>
-                <a href="#strategy" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Business Model</span>
-                </a>
-            </li>
-            <li>
-                <a href="#financials" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Financial Model</span>
-                </a>
-            </li>
-            <li>
-                <a href="#roadmap" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Market Entry</span>
-                </a>
-            </li>
-            <li>
-                <a href="#risks" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Risk Analysis</span>
-                </a>
-            </li>
-            <li>
-                <a href="#forecasts" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Financial Projections</span>
-                </a>
-            </li>
-            <li>
-                <a href="#appendix-a" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Tech Specs</span>
-                </a>
-            </li>
-            <li>
-                <a href="#appendix-b" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Team</span>
-                </a>
-            </li>
-            <li>
-                <a href="#appendix-c" class="group">
-                    <span class="dot"></span>
-                    <span class="label">Legal</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- LOADING SPINNER -->
-    <div id="loading-spinner" class="hidden">
-        <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" class="loading-logo">
-            <defs>
-                <linearGradient id="loadingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#3B82F6"/>
-                    <stop offset="50%" style="stop-color:#06B6D4"/>
-                    <stop offset="100%" style="stop-color:#8B5CF6"/>
-                </linearGradient>
-            </defs>
-            <path d="M16 35 L18.5 28.5 L25.5 28.5 L28 35 L31 35 L22 12 L18 12 L9 35 L12 35 Z M20 21.5 L24 21.5 L25 25.5 L19 25.5 L20 21.5 Z" 
-                  fill="url(#loadingGradient)"/>
-            <path d="M30 16 L30 13 L39 13 L39 16 L36 16 L36 35 L33 35 L33 16 L30 16 Z" 
-                  fill="url(#loadingGradient)"/>
-        </svg>
-    </div>
-
-    <!-- HEADER -->
-    <header class="fixed top-0 left-0 w-full p-4 flex justify-between items-center z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-        <div class="flex items-center space-x-3">
-            <img src="./assets/logo-at.svg" alt="Asiatensor Logo" class="w-10 h-10">
-            <span class="text-xl font-serif font-bold text-gray-900 dark:text-slate-50">Asiatensor</span>
-        </div>
-        
-        <!-- Desktop Controls -->
-        <div class="hidden md:flex items-center space-x-4">
-            <!-- Documents Dropdown -->
-            <div class="relative">
-                <button id="docs-btn" onclick="toggleDocsDropdown()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Documents">
-                    <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </button>
-                <div id="docs-dropdown" class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
-                    <div class="p-3">
-                        <h3 class="font-semibold text-gray-900 dark:text-slate-50 mb-3">Investment Documents</h3>
-                        <div class="space-y-2">
-                            <button onclick="openMemorandum()" class="w-full p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-3">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                <div>
-                                    <div class="font-medium text-sm">Complete Memorandum</div>
-                                    <div class="text-xs opacity-75">7-chapter investment brief</div>
-                                </div>
-                            </button>
-                            <button onclick="openDATCO()" class="w-full p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center space-x-3">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                </svg>
-                                <div>
-                                    <div class="font-medium text-sm">DATCO Analysis</div>
-                                    <div class="text-xs opacity-75">Independent market report</div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
+    <!-- Header -->
+    <header class="no-print sticky top-0 z-50 bg-white/95 dark:bg-black/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Left: Logo and Company Name -->
+                <div class="flex items-center space-x-3">
+                    <img src="./assets/logo-at.svg" alt="[Company Logo]" class="w-8 h-8">
+                    <h1 class="text-xl font-serif font-bold">[Company Name]</h1>
                 </div>
-            </div>
-            
-            <!-- Print Button -->
-            <button id="print-btn" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Print to PDF">
-                <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                </svg>
-            </button>
-            
-            <!-- Theme Toggle -->
-            <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <svg id="theme-icon" class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
-            </button>
-            
-            <!-- Language Switcher -->
-            <div class="flex space-x-1 text-sm font-medium">
-                <button onclick="switchLanguage('en')" id="lang-en" class="px-3 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">EN</button>
-                <button onclick="switchLanguage('zh-cn')" id="lang-zh-cn" class="px-2 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">简体</button>
-                <button onclick="switchLanguage('zh-hk')" id="lang-zh-hk" class="px-2 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">繁體</button>
-                <button onclick="switchLanguage('ja')" id="lang-ja" class="px-2 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">日本語</button>
-                <button onclick="switchLanguage('ko')" id="lang-ko" class="px-2 py-1 rounded text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">한국어</button>
-            </div>
-        </div>
-
-        <!-- Mobile Hamburger Menu -->
-        <div class="md:hidden flex items-center space-x-2">
-            <!-- Theme Toggle (Mobile) -->
-            <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <svg id="theme-icon-mobile" class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
-            </button>
-            
-            <!-- Hamburger Button -->
-            <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <svg id="hamburger-icon" class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-                <svg id="close-icon" class="w-6 h-6 text-gray-600 dark:text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-        </div>
-    </header>
-
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
-        <div class="flex flex-col h-full pt-20 px-6">
-            <!-- Language Switcher (Mobile) -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">Language / 语言 / 언어 / 言語</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="switchLanguage('en'); toggleMobileMenu()" id="lang-en-mobile" class="p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
-                        <div class="font-medium">English</div>
-                        <div class="text-sm opacity-75">EN</div>
-                    </button>
-                    <button onclick="switchLanguage('zh-cn'); toggleMobileMenu()" id="lang-zh-cn-mobile" class="p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
-                        <div class="font-medium">简体中文</div>
-                        <div class="text-sm opacity-75">简体</div>
-                    </button>
-                    <button onclick="switchLanguage('zh-hk'); toggleMobileMenu()" id="lang-zh-hk-mobile" class="p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
-                        <div class="font-medium">繁體中文</div>
-                        <div class="text-sm opacity-75">繁體</div>
-                    </button>
-                    <button onclick="switchLanguage('ja'); toggleMobileMenu()" id="lang-ja-mobile" class="p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
-                        <div class="font-medium">日本語</div>
-                        <div class="text-sm opacity-75">JA</div>
-                    </button>
-                    <button onclick="switchLanguage('ko'); toggleMobileMenu()" id="lang-ko-mobile" class="p-3 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700">
-                        <div class="font-medium">한국어</div>
-                        <div class="text-sm opacity-75">KO</div>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Actions (Mobile) -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">Actions</h3>
-                <div class="space-y-3">
-                    <button onclick="document.getElementById('print-btn').click(); toggleMobileMenu()" class="w-full p-4 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700 flex items-center space-x-3">
+                
+                <!-- Desktop: Right Side Controls -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <!-- Print Button -->
+                    <button id="printBtn" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="Print to PDF">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                         </svg>
-                        <div>
-                            <div class="font-medium">Print to PDF</div>
-                            <div class="text-sm opacity-75">Export document</div>
-                        </div>
                     </button>
                     
-                    <button onclick="openMemorandum(); toggleMobileMenu()" class="w-full p-4 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700 flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <svg id="sunIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
-                        <div>
-                            <div class="font-medium">Complete Investment Memorandum</div>
-                            <div class="text-sm opacity-75">View full 7-chapter document</div>
-                        </div>
+                        <svg id="moonIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
                     </button>
                     
-                    <button onclick="openDATCO(); toggleMobileMenu()" class="w-full p-4 rounded-lg text-left text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border border-gray-200 dark:border-gray-700 flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    <!-- Language Switcher -->
+                    <div class="flex space-x-1 text-sm font-medium">
+                        <button class="language-btn px-3 py-1 rounded bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" data-lang="en">EN</button>
+                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="ja">JA</button>
+                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="ko">KO</button>
+                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="cn-s">CN-S</button>
+                        <button class="language-btn px-3 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" data-lang="cn-t">CN-T</button>
+                    </div>
+                </div>
+                
+                <!-- Mobile: Hamburger Menu -->
+                <div class="md:hidden">
+                    <button id="mobileMenuToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <svg id="hamburgerIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
-                        <div>
-                            <div class="font-medium">DATCO Analysis Report</div>
-                            <div class="text-sm opacity-75">Independent market analysis</div>
-                        </div>
+                        <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
                 </div>
             </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800">
+            <div class="px-4 py-6 space-y-6">
+                <!-- Mobile Theme & Print -->
+                <div class="flex justify-center space-x-4">
+                    <button id="mobilePrintBtn" class="p-3 rounded-lg bg-gray-100 dark:bg-gray-800">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                        </svg>
+                    </button>
+                    <button id="mobileThemeToggle" class="p-3 rounded-lg bg-gray-100 dark:bg-gray-800">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Mobile Language Switcher -->
+                <div class="text-center">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">[Language Selection]</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="mobile-language-btn p-3 rounded-lg bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400" data-lang="en">[English]</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="ja">[Japanese]</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="ko">[Korean]</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="cn-s">[Chinese S]</button>
+                        <button class="mobile-language-btn p-3 rounded-lg bg-gray-100 dark:bg-gray-800" data-lang="cn-t">[Chinese T]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-            <!-- Quick Navigation (Mobile) -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">Quick Navigation</h3>
-                <div class="space-y-2">
-                    <a href="#summary" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Executive Summary
-                    </a>
-                    <a href="#opportunity" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        The Opportunity
-                    </a>
-                    <a href="#strategy" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Business Model
-                    </a>
-                    <a href="#financials" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Financial Model
-                    </a>
-                    <a href="#strategy4" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Market Entry Strategy
-                    </a>
-                    <a href="#competition" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Competition Analysis
-                    </a>
-                    <a href="#risks" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Risk Analysis
-                    </a>
-                    <a href="#returns" onclick="toggleMobileMenu()" class="block p-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        Financial Projections
-                    </a>
+    <!-- Scrollspy Navigation -->
+    <nav class="scrollspy-nav no-print">
+        <div class="scrollspy-dot" data-target="summary" title="[Summary Section]"></div>
+        <div class="scrollspy-dot" data-target="metrics" title="[Metrics Section]"></div>
+        <div class="scrollspy-dot" data-target="opportunity" title="[Opportunity Section]"></div>
+        <div class="scrollspy-dot" data-target="strategy" title="[Strategy Section]"></div>
+        <div class="scrollspy-dot" data-target="financials" title="[Financial Section]"></div>
+        <div class="scrollspy-dot" data-target="execution" title="[Execution Section]"></div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Executive Summary -->
+        <section id="summary" class="mb-20">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6">
+                    [Executive Brief Title]
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+            </div>
+        </section>
+
+        <!-- Bento Box Metrics Grid -->
+        <section id="metrics" class="mb-20">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bento-hover bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 p-6 rounded-2xl border border-blue-200 dark:border-blue-800">
+                    <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">[Data Point 1]</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 1]</div>
+                </div>
+                
+                <div class="bento-hover bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 p-6 rounded-2xl border border-green-200 dark:border-green-800">
+                    <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">[Data Point 2]</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 2]</div>
+                </div>
+                
+                <div class="bento-hover bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950 dark:to-violet-950 p-6 rounded-2xl border border-purple-200 dark:border-purple-800">
+                    <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">[Data Point 3]</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 3]</div>
+                </div>
+                
+                <div class="bento-hover bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
+                    <div class="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-2">[Data Point 4]</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">[Metric Label 4]</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insight Card 1: Opportunity -->
+        <section id="opportunity" class="mb-16 print-break">
+            <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800" onclick="toggleCard(this)">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-serif font-bold mb-4">[Opportunity Heading Placeholder]</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                    </div>
+                    <div class="expand-icon ml-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="expanded-content hidden expand-for-print mt-8">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">[Subsection 1 Placeholder]</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                            </p>
+                            <ul class="space-y-2 text-gray-600 dark:text-gray-400">
+                                <li>• Lorem ipsum placeholder point</li>
+                                <li>• Consectetur adipiscing elit</li>
+                                <li>• Sed do eiusmod tempor incididunt</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">[Subsection 2 Placeholder]</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">
+                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+                            </p>
+                            <div class="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">[Key Statistic]</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400">[Statistic Description]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insight Card 2: Strategy -->
+        <section id="strategy" class="mb-16 print-break">
+            <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800" onclick="toggleCard(this)">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-serif font-bold mb-4">[Strategy Heading Placeholder]</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg">Sed ut perspiciatis unde omnis iste natus error sit voluptatem...</p>
+                    </div>
+                    <div class="expand-icon ml-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="expanded-content hidden expand-for-print mt-8">
+                    <div class="space-y-6">
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl">
+                                <div class="w-12 h-12 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                    <span class="text-white font-bold">1</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">[Phase 1 Placeholder]</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Lorem ipsum dolor sit amet consectetur.</p>
+                            </div>
+                            
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl">
+                                <div class="w-12 h-12 bg-green-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                    <span class="text-white font-bold">2</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">[Phase 2 Placeholder]</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Adipiscing elit sed do eiusmod tempor.</p>
+                            </div>
+                            
+                            <div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl">
+                                <div class="w-12 h-12 bg-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                    <span class="text-white font-bold">3</span>
+                                </div>
+                                <h4 class="font-semibold mb-2">[Phase 3 Placeholder]</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Incididunt ut labore et dolore magna.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insight Card 3: Financials -->
+        <section id="financials" class="mb-16 print-break">
+            <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800" onclick="toggleCard(this)">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-serif font-bold mb-4">[Financial Heading Placeholder]</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg">At vero eos et accusamus et iusto odio dignissimos...</p>
+                    </div>
+                    <div class="expand-icon ml-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="expanded-content hidden expand-for-print mt-8">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-200 dark:border-gray-700">
+                                    <th class="text-left py-3">[Company Name 1]</th>
+                                    <th class="text-center py-3">[Data Column 1]</th>
+                                    <th class="text-center py-3">[Data Column 2]</th>
+                                    <th class="text-center py-3">[Data Column 3]</th>
+                                </tr>
+                            </thead>
+                            <tbody class="space-y-2">
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="py-3"><span class="clickable-company cursor-pointer text-blue-600 hover:text-blue-800" data-symbol="AAPL">[Company Name 1]</span></td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="py-3"><span class="clickable-company cursor-pointer text-blue-600 hover:text-blue-800" data-symbol="MSFT">[Company Name 2]</span></td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="py-3"><span class="clickable-company cursor-pointer text-blue-600 hover:text-blue-800" data-symbol="GOOGL">[Company Name 3]</span></td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                    <td class="text-center py-3">[Data Point]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Insight Card 4: Execution -->
+        <section id="execution" class="mb-16 print-break">
+            <div class="insight-card bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800" onclick="toggleCard(this)">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h2 class="text-3xl font-serif font-bold mb-4">[Execution Heading Placeholder]</h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg">Nam libero tempore, cum soluta nobis est eligendi optio...</p>
+                    </div>
+                    <div class="expand-icon ml-4">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="expanded-content hidden expand-for-print mt-8">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">[Team Section Placeholder]</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+                                    <div>
+                                        <div class="font-semibold">[Team Member Name]</div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">[Position Title]</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+                                    <div>
+                                        <div class="font-semibold">[Team Member Name]</div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">[Position Title]</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4">[Timeline Section Placeholder]</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-3 h-3 bg-blue-600 rounded-full mt-2"></div>
+                                    <div>
+                                        <div class="font-semibold">[Milestone 1]</div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">[Date Placeholder]</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-3 h-3 bg-green-600 rounded-full mt-2"></div>
+                                    <div>
+                                        <div class="font-semibold">[Milestone 2]</div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">[Date Placeholder]</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- TradingView Modal -->
+    <div id="chartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 no-print">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h3 id="chartTitle" class="text-xl font-semibold">[Stock Chart Title]</h3>
+                    <button id="closeChart" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="chartContainer" class="h-96 p-6">
+                    <!-- TradingView widget will be inserted here -->
                 </div>
             </div>
         </div>
     </div>
 
-    <main id="main-content" class="pt-24 px-4 md:px-8">
-        <div class="max-w-4xl mx-auto space-y-16">
-            
-            <!-- SECTION 1: Executive Summary -->
-            <section id="summary">
-                <div class="text-center mb-12">
-                    <h1 id="main-title" class="text-4xl md:text-5xl font-serif font-bold text-gray-900 dark:text-slate-50 mb-4">
-                        Asiatensor Executive Brief
-                    </h1>
-                    <p id="main-subtitle" class="text-lg text-gray-600 dark:text-gray-400">
-                        Capitalizing on Asia's Historic AI Investment Opportunity
-                    </p>
-                </div>
+    <script>
+        // ==========================================
+        // AUTHENTICATION & THEME MANAGEMENT
+        // ==========================================
+        
+        // Check authentication
+        if (sessionStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = './login.html';
+        }
+
+        // Theme Management
+        class ThemeManager {
+            constructor() {
+                this.theme = localStorage.getItem('theme') || 'dark';
+                this.applyTheme();
+                this.bindEvents();
+            }
+
+            applyTheme() {
+                if (this.theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    document.getElementById('sunIcon').classList.remove('hidden');
+                    document.getElementById('moonIcon').classList.add('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.getElementById('sunIcon').classList.add('hidden');
+                    document.getElementById('moonIcon').classList.remove('hidden');
+                }
+            }
+
+            toggle() {
+                this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', this.theme);
+                this.applyTheme();
+            }
+
+            bindEvents() {
+                document.getElementById('themeToggle').addEventListener('click', () => this.toggle());
+                document.getElementById('mobileThemeToggle').addEventListener('click', () => this.toggle());
+            }
+        }
+
+        // ==========================================
+        // LANGUAGE MANAGEMENT
+        // ==========================================
+        
+        class LanguageManager {
+            constructor() {
+                this.currentLang = 'en';
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // Desktop language buttons
+                document.querySelectorAll('.language-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchLanguage(e.target.dataset.lang);
+                        this.updateLanguageButtons(e.target);
+                    });
+                });
+
+                // Mobile language buttons
+                document.querySelectorAll('.mobile-language-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchLanguage(e.target.dataset.lang);
+                        this.updateMobileLanguageButtons(e.target);
+                    });
+                });
+            }
+
+            switchLanguage(lang) {
+                this.currentLang = lang;
+                // Here you would load language-specific content
+                console.log(`Switched to language: ${lang}`);
+            }
+
+            updateLanguageButtons(activeBtn) {
+                document.querySelectorAll('.language-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+                });
                 
-                <!-- BENTO GRID -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                    <div class="bento-box rounded-xl p-6 text-center">
-                        <div id="funding-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Round 1 Funding Target</div>
-                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value">$7M-$8M</div>
-                    </div>
-                    
-                    <div class="bento-box rounded-xl p-6 text-center">
-                        <div id="market-cap-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Target Market Cap (Base Case)</div>
-                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value">$279M</div>
-                    </div>
-                    
-                    <div class="bento-box rounded-xl p-6 text-center">
-                        <div id="profit-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Potential ROI (Base Case)</div>
-                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value">~28x</div>
-                    </div>
-                    
-                    <div class="bento-box rounded-xl p-6 text-center">
-                        <div id="volume-label" class="text-sm text-gray-500 dark:text-gray-400 mb-2">Execution Timeline</div>
-                        <div class="text-3xl md:text-4xl font-bold font-serif metric-value">Within 2025</div>
-                    </div>
-                </div>
-            </section>
+                activeBtn.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-800');
+                activeBtn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+            }
 
-            <!-- SECTION 2: Chapter 1 - The Great Disconnect -->
-            <section id="opportunity" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="opportunity-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            Chapter 1: The Great Disconnect - Asia's Web3 Dominance vs TAO's Value Vacuum
-                        </h2>
-                        <p id="opportunity-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            Asia is the undisputed epicenter of Web3, yet TAO remains largely unknown. This presents a historic arbitrage opportunity.
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400">1.1 Asia: The Epicenter of Global Web3 Ecosystem</h3>
-                        <p id="opportunity-para1">Asia represents 60% of global crypto adoption and houses the world's most sophisticated DeFi protocols, yet TAO remains largely unknown outside technical circles. While Western markets debate AI regulation, Asian entrepreneurs are building the future. Major AI companies like <span class="stock-ticker cursor-pointer text-blue-600 hover:text-blue-800 underline" data-ticker="NVDA">NVIDIA</span> and cloud providers like <span class="stock-ticker cursor-pointer text-blue-600 hover:text-blue-800 underline" data-ticker="MSFT">Microsoft</span> are seeing massive growth in this space.</p>
-                        <p id="opportunity-para2">Our market intelligence reveals a critical window: institutional capital is seeking exposure to decentralized AI, but lacks the infrastructure and expertise to access this emerging asset class safely and efficiently.</p>
-                        
-                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg mt-6">
-                            <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-2">Key Market Facts</h4>
-                            <ul class="text-sm space-y-1">
-                                <li>• Asia accounts for over 60% of global crypto trading volume</li>
-                                <li>• TAO not listed on major Asian exchanges (Upbit, Bithumb, bitFlyer)</li>
-                                <li>• Regulatory frameworks developing in Singapore, Hong Kong, Japan</li>
-                                <li>• Institutional capital seeking $1.5-2.5B exposure to decentralized AI</li>
-                            </ul>
-                        </div>
+            updateMobileLanguageButtons(activeBtn) {
+                document.querySelectorAll('.mobile-language-btn').forEach(btn => {
+                    btn.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('bg-gray-100', 'dark:bg-gray-800');
+                });
+                
+                activeBtn.classList.remove('bg-gray-100', 'dark:bg-gray-800');
+                activeBtn.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+            }
+        }
 
-                        <h3 class="text-xl font-semibold text-green-600 dark:text-green-400 mt-6">1.2 TAO's Technical Advantages and Market Positioning</h3>
-                        <p>Bittensor represents the next phase of AI democratization through an incentive-driven decentralized network where anyone can contribute computational resources and earn rewards. The TAO token serves as the network's native currency, with its value growing alongside network utility.</p>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-green-600 dark:text-green-400 font-semibold mb-2">Technical Moats</h4>
-                            <ul class="text-sm space-y-1">
-                                <li>• Unique incentive mechanisms ensure network quality</li>
-                                <li>• Scalable subnet architecture supports specialized AI applications</li>
-                                <li>• Censorship-resistant and decentralized characteristics align with Asian market demands</li>
-                            </ul>
-                        </div>
+        // ==========================================
+        // MOBILE MENU MANAGEMENT
+        // ==========================================
+        
+        class MobileMenuManager {
+            constructor() {
+                this.isOpen = false;
+                this.bindEvents();
+            }
 
-                        <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mt-6">1.3 Regulatory Environment Analysis</h3>
-                        <p>Major Asian jurisdictions have adopted varying degrees of openness toward AI and cryptocurrency, creating a favorable landscape for TAO adoption.</p>
-                        
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">Singapore & Hong Kong</h5>
-                                <p class="text-sm">Active regulatory sandboxes and clear digital asset frameworks providing institutional pathways.</p>
-                            </div>
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">Japan & South Korea</h5>
-                                <p class="text-sm">Comprehensive crypto regulations with government AI development support and highly active markets.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            bindEvents() {
+                document.getElementById('mobileMenuToggle').addEventListener('click', () => this.toggle());
+            }
 
-            <!-- SECTION 3: Chapter 2 - Dual-Engine Profit Model -->
-            <section id="strategy" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="strategy-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            Chapter 2: Dual-Engine Profit Model
-                        </h2>
-                        <p id="strategy-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            Combining subnet operations and validator nodes to maximize TAO generation and market positioning in Asia.
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-xl font-semibold text-green-600 dark:text-green-400">2.1 Engine 1: Subnet Operations</h3>
-                        <p>Deploy specialized AI subnets targeting Asian market needs, focusing on high-demand applications that generate consistent TAO rewards.</p>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-green-600 dark:text-green-400 font-semibold mb-2">Target Applications</h4>
-                            <ul class="text-sm space-y-1">
-                                <li>• Language processing (Chinese, Japanese, Korean)</li>
-                                <li>• Trading algorithms and DeFi optimization</li>
-                                <li>• Regulatory compliance automation</li>
-                                <li>• Supply chain optimization and logistics</li>
-                            </ul>
-                        </div>
+            toggle() {
+                const menu = document.getElementById('mobileMenu');
+                const hamburger = document.getElementById('hamburgerIcon');
+                const close = document.getElementById('closeIcon');
 
-                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg mt-4">
-                            <h4 class="text-gray-700 dark:text-gray-300 font-semibold mb-2">Revenue Model</h4>
-                            <p class="text-sm">Each successful subnet generates 50-100 TAO daily. Operating 3-5 high-performance subnets targets ~60,000 TAO annually.</p>
-                        </div>
-                        
-                        <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mt-6">2.2 Engine 2: Validator Network</h3>
-                        <p>Establish validator nodes across strategic Asian jurisdictions to maximize TAO rewards while ensuring regulatory compliance and building local market influence.</p>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-2">Validator Strategy</h4>
-                            <ul class="text-sm space-y-1">
-                                <li>• Deploy 20 validator nodes across Singapore, Hong Kong, and Japan</li>
-                                <li>• Target 200-300 TAO daily rewards (~82,000 TAO annually)</li>
-                                <li>• Maintain 99.9% uptime with enterprise-grade infrastructure</li>
-                                <li>• Build relationships with local regulatory bodies</li>
-                            </ul>
-                        </div>
-                        
-                        <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mt-6">2.3 Market Positioning Strategy</h3>
-                        <p>Become the premier gateway for Asian institutional access to the Bittensor ecosystem, leveraging first-mover advantage and technical expertise.</p>
-                        
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">Exchange Partnerships</h5>
-                                <p class="text-sm">Establish relationships with major Asian exchanges for TAO listing and institutional trading.</p>
-                            </div>
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">Institutional Services</h5>
-                                <p class="text-sm">Develop custody, trading solutions, and consulting services for institutional TAO adoption.</p>
-                            </div>
-                        </div>
+                this.isOpen = !this.isOpen;
 
-                        <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg mt-6">
-                            <h4 class="text-orange-600 dark:text-orange-400 font-semibold mb-2">Combined Revenue Projection</h4>
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <span class="font-medium">Subnet Operations:</span> ~60,000 TAO/year
-                                </div>
-                                <div>
-                                    <span class="font-medium">Validator Network:</span> ~82,000 TAO/year
-                                </div>
-                                <div class="col-span-2 pt-2 border-t border-orange-200 dark:border-orange-800">
-                                    <span class="font-bold text-orange-700 dark:text-orange-300">Total Annual Production: ~142,000 TAO</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                if (this.isOpen) {
+                    menu.classList.remove('hidden');
+                    hamburger.classList.add('hidden');
+                    close.classList.remove('hidden');
+                } else {
+                    menu.classList.add('hidden');
+                    hamburger.classList.remove('hidden');
+                    close.classList.add('hidden');
+                }
+            }
+        }
 
-            <!-- SECTION 4: Chapter 3 - TAO Production & Revenue Model -->
-            <section id="financials" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="financials-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            第3章 TAO生产与收益模型
-                        </h2>
-                        <p id="financials-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            年度TAO产出约112,000个，基准情况下年利润约8,960万美元。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400">3.1 生产指标</h3>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">年度TAO产出：约112,000个</h4>
-                            <ul class="text-sm space-y-1">
-                                <li>• 子网运营：约30,000 TAO/年</li>
-                                <li>• 验证器网络：约82,000 TAO/年</li>
-                            </ul>
-                        </div>
+        // ==========================================
+        // SCROLLSPY NAVIGATION
+        // ==========================================
+        
+        class ScrollspyManager {
+            constructor() {
+                this.sections = ['summary', 'metrics', 'opportunity', 'strategy', 'financials', 'execution'];
+                this.bindEvents();
+                this.updateActiveSection();
+            }
 
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-green-600 dark:text-green-400 font-semibold mb-3">收益场景分析</h4>
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between">
-                                    <span>保守情况（14倍ROI）</span>
-                                    <span class="text-green-600 dark:text-green-400 font-semibold">$5,880万年收益</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>基准情况（28倍ROI）</span>
-                                    <span class="text-green-600 dark:text-green-400 font-semibold">$8,960万年收益</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span>乐观情况（50倍ROI）</span>
-                                    <span class="text-green-600 dark:text-green-400 font-semibold">$1.61亿年收益</span>
-                                </div>
-                            </div>
-                        </div>
+            bindEvents() {
+                // Scroll event
+                window.addEventListener('scroll', () => this.updateActiveSection());
 
-                        <h3 class="text-xl font-semibold text-purple-600 dark:text-purple-400 mt-6">3.2 成本结构</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">一次性投资成本</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>硬件设备：$200万</div>
-                                    <div>软件开发：$150万</div>
-                                    <div>运营启动资金：$100万</div>
-                                </div>
-                            </div>
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-purple-600 dark:text-purple-400 mb-2">年度运营成本</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>电力和托管：$80万/年</div>
-                                    <div>人员成本：$120万/年</div>
-                                    <div>维护和升级：$50万/年</div>
-                                </div>
-                            </div>
-                        </div>
+                // Click events
+                document.querySelectorAll('.scrollspy-dot').forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        const target = e.target.dataset.target;
+                        document.getElementById(target).scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    });
+                });
+            }
 
-                        <h3 class="text-xl font-semibold text-orange-600 dark:text-orange-400 mt-6">3.3 盈利能力分析</h3>
-                        
-                        <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-orange-600 dark:text-orange-400 font-semibold mb-3">基于基准情况（28倍ROI）</h4>
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>年收益：$8,960万</div>
-                                <div>年成本：$250万</div>
-                                <div>净利润：$8,710万</div>
-                                <div>净利润率：97.2%</div>
+            updateActiveSection() {
+                const scrollTop = window.scrollY;
+                const viewportHeight = window.innerHeight;
+                
+                let activeSection = this.sections[0];
+                
+                this.sections.forEach(sectionId => {
+                    const element = document.getElementById(sectionId);
+                    if (element) {
+                        const rect = element.getBoundingClientRect();
+                        if (rect.top <= viewportHeight * 0.3) {
+                            activeSection = sectionId;
+                        }
+                    }
+                });
+
+                // Update active dot
+                document.querySelectorAll('.scrollspy-dot').forEach(dot => {
+                    dot.classList.remove('active');
+                    if (dot.dataset.target === activeSection) {
+                        dot.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // ==========================================
+        // INSIGHT CARDS MANAGEMENT
+        // ==========================================
+        
+        function toggleCard(card) {
+            const content = card.querySelector('.expanded-content');
+            const icon = card.querySelector('.expand-icon');
+            
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotated');
+        }
+
+        // ==========================================
+        // PRINT FUNCTIONALITY
+        // ==========================================
+        
+        class PrintManager {
+            constructor() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.getElementById('printBtn').addEventListener('click', () => this.print());
+                document.getElementById('mobilePrintBtn').addEventListener('click', () => this.print());
+            }
+
+            print() {
+                // Expand all cards before printing
+                document.querySelectorAll('.expanded-content').forEach(content => {
+                    content.classList.remove('hidden');
+                });
+                
+                // Trigger print
+                window.print();
+            }
+        }
+
+        // ==========================================
+        // TRADINGVIEW CHART MODAL
+        // ==========================================
+        
+        class ChartModalManager {
+            constructor() {
+                this.modal = document.getElementById('chartModal');
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                // Close button
+                document.getElementById('closeChart').addEventListener('click', () => this.close());
+                
+                // Click outside modal
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) this.close();
+                });
+
+                // Clickable company names
+                document.querySelectorAll('.clickable-company').forEach(element => {
+                    element.addEventListener('click', (e) => {
+                        const symbol = e.target.dataset.symbol;
+                        this.openChart(symbol);
+                    });
+                });
+            }
+
+            openChart(symbol) {
+                document.getElementById('chartTitle').textContent = `${symbol} Stock Chart`;
+                
+                // Clear previous chart
+                const container = document.getElementById('chartContainer');
+                container.innerHTML = `
+                    <div class="flex items-center justify-center h-full">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold mb-4">${symbol} Chart</div>
+                            <div class="text-gray-600 dark:text-gray-400">
+                                [TradingView Widget Placeholder]<br>
+                                In production, this would display the actual ${symbol} chart
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                `;
+                
+                this.modal.classList.remove('hidden');
+            }
 
-            <!-- SECTION 5: Chapter 4 - Market Entry Strategy -->
-            <section id="strategy4" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="strategy4-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            第4章 市场进入战略
-                        </h2>
-                        <p id="strategy4-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            阶段式发展计划，从基础设施建设到生态主导的三个阶段战略。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400">4.1 阶段式发展计划</h3>
-                        
-                        <div class="space-y-4 mt-4">
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-                                <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-2">第一阶段（2025 Q1-Q2）：基础设施建设</h4>
-                                <ul class="text-sm space-y-1">
-                                    <li>• 完成首轮融资$700-800万</li>
-                                    <li>• 建立核心技术团队</li>
-                                    <li>• 部署首批验证器节点</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h4 class="text-green-600 dark:text-green-400 font-semibold mb-2">第二阶段（2025 Q3-Q4）：市场扩张</h4>
-                                <ul class="text-sm space-y-1">
-                                    <li>• 推出专业子网服务</li>
-                                    <li>• 建立交易所合作关系</li>
-                                    <li>• 开发机构客户</li>
-                                </ul>
-                            </div>
-                            
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
-                                <h4 class="text-purple-600 dark:text-purple-400 font-semibold mb-2">第三阶段（2026年）：生态主导</h4>
-                                <ul class="text-sm space-y-1">
-                                    <li>• 成为亚洲TAO生态的领导者</li>
-                                    <li>• 考虑IPO或被收购机会</li>
-                                </ul>
-                            </div>
-                        </div>
+            close() {
+                this.modal.classList.add('hidden');
+            }
+        }
 
-                        <h3 class="text-xl font-semibold text-orange-600 dark:text-orange-400 mt-6">4.2 关键成功因素</h3>
-                        
-                        <div class="grid md:grid-cols-3 gap-4 mt-4">
-                            <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-orange-600 dark:text-orange-400 mb-2">技术优势</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>• 完整的Bittensor生态系统专业知识</div>
-                                    <div>• 在亚洲市场独家的技术实力</div>
-                                </div>
-                            </div>
-                            <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-orange-600 dark:text-orange-400 mb-2">政府关系</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>• 与日本政府实体建立的关系</div>
-                                    <div>• 监管合规TAO运营的先发优势</div>
-                                </div>
-                            </div>
-                            <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-orange-600 dark:text-orange-400 mb-2">市场定位</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>• 首个专注于亚洲的Bittensor商业平台</div>
-                                    <div>• 机构级服务和安全标准</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 6: Chapter 5 - Competition Analysis -->
-            <section id="competition" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="competition-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            第5章 竞争分析
-                        </h2>
-                        <p id="competition-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            亚洲市场Bittensor生态系统商业化领域的竞争格局与我们的竞争优势。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-xl font-semibold text-red-600 dark:text-red-400">5.1 当前竞争格局</h3>
-                        
-                        <p>目前，亚洲市场上几乎没有专门从事Bittensor生态系统商业化的公司。主要的潜在竞争对手包括：</p>
-                        
-                        <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg mt-4">
-                            <h4 class="text-red-600 dark:text-red-400 font-semibold mb-3">潜在竞争对手</h4>
-                            <ul class="text-sm space-y-1">
-                                <li>• 传统AI公司转向去中心化模型</li>
-                                <li>• 西方Bittensor运营商扩展到亚洲</li>
-                                <li>• 新兴的本地初创公司</li>
-                            </ul>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-green-600 dark:text-green-400 mt-6">5.2 竞争优势</h3>
-                        
-                        <div class="grid md:grid-cols-3 gap-4 mt-4">
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-green-600 dark:text-green-400 mb-2">技术护城河</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>• 深度的Bittensor技术专业知识</div>
-                                    <div>• 已验证的子网开发能力</div>
-                                    <div>• 优化的验证器运营经验</div>
-                                </div>
-                            </div>
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-green-600 dark:text-green-400 mb-2">市场优势</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>• 先发优势在监管合规性</div>
-                                    <div>• 建立的政府和行业关系</div>
-                                    <div>• 理解亚洲市场的文化和商业实践</div>
-                                </div>
-                            </div>
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
-                                <h5 class="font-semibold text-green-600 dark:text-green-400 mb-2">执行能力</h5>
-                                <div class="text-sm space-y-1">
-                                    <div>• 经验丰富的团队</div>
-                                    <div>• 充足的资金支持</div>
-                                    <div>• 明确的执行路线图</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 7: Chapter 6 - Risk Analysis -->
-            <section id="risks" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="risks-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            第6章 风险分析与缓解策略
-                        </h2>
-                        <p id="risks-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            主要风险因素包括技术风险、市场风险和运营风险，通过多样化策略和强大的风险管控体系进行缓解。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">6.1 主要风险因素</h3>
-                        
-                        <div class="grid md:grid-cols-3 gap-4 mb-6">
-                            <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                                <h4 class="text-red-600 dark:text-red-400 font-semibold mb-3">技术风险</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• Bittensor协议的更新可能影响收益</div>
-                                    <div>• 竞争激烈可能降低子网表现</div>
-                                    <div>• 硬件故障或安全漏洞</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-                                <h4 class="text-orange-600 dark:text-orange-400 font-semibold mb-3">市场风险</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• TAO价格波动</div>
-                                    <div>• 监管政策变化</div>
-                                    <div>• 宏观经济不稳定</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                                <h4 class="text-yellow-600 dark:text-yellow-400 font-semibold mb-3">运营风险</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• 关键人员流失</div>
-                                    <div>• 运营成本上升</div>
-                                    <div>• 客户集中度过高</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">6.2 风险缓解策略</h3>
-                        
-                        <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                            <div class="grid md:grid-cols-3 gap-4">
-                                <div>
-                                    <h5 class="text-green-700 dark:text-green-300 font-medium mb-2">技术风险缓解</h5>
-                                    <div class="space-y-1 text-sm">
-                                        <div>• 持续的研发投入</div>
-                                        <div>• 多样化的子网组合</div>
-                                        <div>• 强大的安全和备份系统</div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="text-green-700 dark:text-green-300 font-medium mb-2">市场风险缓解</h5>
-                                    <div class="space-y-1 text-sm">
-                                        <div>• 分散的收入来源</div>
-                                        <div>• 灵活的商业模型</div>
-                                        <div>• 强大的合规体系</div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="text-green-700 dark:text-green-300 font-medium mb-2">运营风险缓解</h5>
-                                    <div class="space-y-1 text-sm">
-                                        <div>• 关键员工激励计划</div>
-                                        <div>• 成本控制措施</div>
-                                        <div>• 客户多样化策略</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 8: Chapter 7 - Financial Forecasts and Investment Returns -->
-            <section id="forecasts" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="forecasts-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            第7章 财务预测与投资回报
-                        </h2>
-                        <p id="forecasts-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            五年财务预测显示，基于$750万初始投资，第5年累计ROI可达3,667%，年利润率高达97.2%。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">7.1 五年财务预测</h3>
-                        
-                        <div class="grid md:grid-cols-3 gap-6 mb-6">
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                                <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">收入预测 (百万美元)</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between"><span>2025年:</span><span class="font-mono">$25M</span></div>
-                                    <div class="flex justify-between"><span>2026年:</span><span class="font-mono">$89M</span></div>
-                                    <div class="flex justify-between"><span>2027年:</span><span class="font-mono">$156M</span></div>
-                                    <div class="flex justify-between"><span>2028年:</span><span class="font-mono">$234M</span></div>
-                                    <div class="flex justify-between"><span>2029年:</span><span class="font-mono">$312M</span></div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800">
-                                <h4 class="text-red-600 dark:text-red-400 font-semibold mb-3">成本预测 (百万美元)</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between"><span>2025年:</span><span class="font-mono">$8M</span></div>
-                                    <div class="flex justify-between"><span>2026年:</span><span class="font-mono">$15M</span></div>
-                                    <div class="flex justify-between"><span>2027年:</span><span class="font-mono">$25M</span></div>
-                                    <div class="flex justify-between"><span>2028年:</span><span class="font-mono">$35M</span></div>
-                                    <div class="flex justify-between"><span>2029年:</span><span class="font-mono">$45M</span></div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                                <h4 class="text-green-600 dark:text-green-400 font-semibold mb-3">净利润预测 (百万美元)</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div class="flex justify-between"><span>2025年:</span><span class="font-mono font-bold">$17M</span></div>
-                                    <div class="flex justify-between"><span>2026年:</span><span class="font-mono font-bold">$74M</span></div>
-                                    <div class="flex justify-between"><span>2027年:</span><span class="font-mono font-bold">$131M</span></div>
-                                    <div class="flex justify-between"><span>2028年:</span><span class="font-mono font-bold">$199M</span></div>
-                                    <div class="flex justify-between"><span>2029年:</span><span class="font-mono font-bold">$267M</span></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">7.2 投资回报分析</h3>
-                        
-                        <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800 mb-4">
-                            <h4 class="text-purple-700 dark:text-purple-300 font-semibold mb-3">基于$750万初始投资的ROI分析：</h4>
-                            <div class="grid md:grid-cols-5 gap-3 text-sm">
-                                <div class="text-center">
-                                    <div class="text-purple-600 dark:text-purple-400 font-mono font-bold text-lg">227%</div>
-                                    <div class="text-xs opacity-75">第1年ROI</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-purple-600 dark:text-purple-400 font-mono font-bold text-lg">1,187%</div>
-                                    <div class="text-xs opacity-75">第2年累计ROI</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-purple-600 dark:text-purple-400 font-mono font-bold text-lg">2,047%</div>
-                                    <div class="text-xs opacity-75">第3年累计ROI</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-purple-600 dark:text-purple-400 font-mono font-bold text-lg">2,907%</div>
-                                    <div class="text-xs opacity-75">第4年累计ROI</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-purple-600 dark:text-purple-400 font-mono font-bold text-lg">3,667%</div>
-                                    <div class="text-xs opacity-75">第5年累计ROI</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">7.3 敏感性分析</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-                                <h5 class="font-semibold text-gray-900 dark:text-slate-50 mb-2">TAO价格敏感性</h5>
-                                <div class="space-y-1 text-sm">
-                                    <div>• TAO价格-20%：基准情况ROI降至22倍</div>
-                                    <div>• TAO价格+20%：基准情况ROI增至34倍</div>
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-                                <h5 class="font-semibold text-gray-900 dark:text-slate-50 mb-2">市场份额敏感性</h5>
-                                <div class="space-y-1 text-sm">
-                                    <div>• 市场份额-30%：仍可实现19倍ROI</div>
-                                    <div>• 市场份额+30%：可实现36倍ROI</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 9: Appendix A - Technical Specifications -->
-            <section id="appendix-a" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="appendix-a-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            附录A：技术规格与实施细节
-                        </h2>
-                        <p id="appendix-a-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            详细的硬件要求、软件架构和技术栈规格，确保系统的可靠性和可扩展性。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">A.1 硬件要求</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                                <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">验证器节点规格</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• CPU：64核心以上</div>
-                                    <div>• RAM：512GB以上</div>
-                                    <div>• 存储：10TB NVMe SSD</div>
-                                    <div>• 网络：1Gbps专线连接</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                                <h4 class="text-green-600 dark:text-green-400 font-semibold mb-3">子网运营规格</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• GPU：NVIDIA H100或同等级别</div>
-                                    <div>• CPU：32核心以上</div>
-                                    <div>• RAM：256GB以上</div>
-                                    <div>• 存储：5TB NVMe SSD</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">A.2 软件架构</h3>
-                        
-                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 dark:text-slate-50 mb-3">核心系统组件</h4>
-                            <div class="grid md:grid-cols-2 gap-4 text-sm">
-                                <div class="space-y-2">
-                                    <div>• Bittensor节点软件</div>
-                                    <div>• 自定义监控和管理工具</div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div>• 自动化部署和扩展系统</div>
-                                    <div>• 安全和合规监控</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-                            <h4 class="font-semibold text-gray-900 dark:text-slate-50 mb-3">开发技术栈</h4>
-                            <div class="grid md:grid-cols-3 gap-4 text-sm">
-                                <div class="space-y-2">
-                                    <div>• Python 3.9+</div>
-                                    <div>• Docker容器化</div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div>• Kubernetes编排</div>
-                                    <div>• Prometheus监控</div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div>• Grafana可视化</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 10: Appendix B - Team and Advisors -->
-            <section id="appendix-b" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="appendix-b-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            附录B：团队与顾问
-                        </h2>
-                        <p id="appendix-b-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            由经验丰富的技术和商务专家组成的核心团队，以及来自行业领袖的顾问委员会支持。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">B.1 核心团队</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-6 mb-6">
-                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                                <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">技术团队</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• <strong>首席技术官</strong>：Bittensor核心贡献者</div>
-                                    <div>• <strong>AI研发总监</strong>：前Google DeepMind研究员</div>
-                                    <div>• <strong>基础设施总监</strong>：AWS认证架构师</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                                <h4 class="text-green-600 dark:text-green-400 font-semibold mb-3">商务团队</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• <strong>首席执行官</strong>：前摩根大通亚洲区董事总经理</div>
-                                    <div>• <strong>市场总监</strong>：前币安亚洲区负责人</div>
-                                    <div>• <strong>合规总监</strong>：前新加坡金管局监管专家</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">B.2 顾问委员会</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
-                                <h4 class="text-purple-600 dark:text-purple-400 font-semibold mb-3">技术顾问</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• Bittensor创始团队成员</div>
-                                    <div>• 以太坊基金会技术顾问</div>
-                                    <div>• 亚洲区块链联盟理事</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-                                <h4 class="text-orange-600 dark:text-orange-400 font-semibold mb-3">商务顾问</h4>
-                                <div class="space-y-2 text-sm">
-                                    <div>• 日本金融厅前官员</div>
-                                    <div>• 香港数字资产交易协会主席</div>
-                                    <div>• 新加坡风投基金合伙人</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 11: Appendix C - Legal and Compliance Framework -->
-            <section id="appendix-c" class="bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 hover:border-blue-500/30 transition-all">
-                <div class="flex justify-between items-center cursor-pointer" onclick="toggleCollapsible(this)">
-                    <div>
-                        <h2 id="appendix-c-title" class="text-2xl font-serif font-bold text-gray-900 dark:text-slate-50">
-                            附录C：法律与合规框架
-                        </h2>
-                        <p id="appendix-c-summary" class="text-gray-600 dark:text-gray-400 mt-2">
-                            完善的法律结构和合规体系，确保在各司法管辖区的合法合规运营。
-                        </p>
-                    </div>
-                    <svg class="w-6 h-6 transition-transform text-gray-500 collapsible-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="hidden pt-6 mt-6 border-t border-gray-200 dark:border-gray-800 collapsible-content">
-                    <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">C.1 法律结构</h3>
-                        
-                        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg mb-4">
-                            <h4 class="font-semibold text-gray-900 dark:text-slate-50 mb-3">控股公司结构</h4>
-                            <div class="space-y-2 text-sm">
-                                <div>• <strong>新加坡</strong>：Asiatensor Holdings Pte Ltd</div>
-                                <div>• <strong>香港</strong>：Asiatensor Asia Limited</div>
-                                <div>• <strong>日本</strong>：Asiatensor Japan K.K.</div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">C.2 合规要求</h3>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800 mb-4">
-                            <h4 class="text-blue-600 dark:text-blue-400 font-semibold mb-3">监管许可</h4>
-                            <div class="space-y-2 text-sm">
-                                <div>• <strong>新加坡</strong>：MAS数字支付代币服务许可</div>
-                                <div>• <strong>香港</strong>：SFC虚拟资产交易平台许可 (像<span class="stock-ticker cursor-pointer text-blue-600 hover:text-blue-800 underline" data-ticker="HK:0700">腾讯</span>这样的科技巨头正在积极配合)</div>
-                                <div>• <strong>日本</strong>：JFSA加密资产交换业许可 (与<span class="stock-ticker cursor-pointer text-blue-600 hover:text-blue-800 underline" data-ticker="TYO:6758">索尼</span>等公司的AI战略对齐)</div>
-                            </div>
-                        </div>
-                        
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-slate-50 mb-4">C.3 风险管控</h3>
-                        
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                                <h4 class="text-green-600 dark:text-green-400 font-semibold mb-3">AML/KYC政策</h4>
-                                <div class="space-y-1 text-sm">
-                                    <div>• 客户身份验证</div>
-                                    <div>• 交易监控</div>
-                                    <div>• 可疑活动报告</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border border-purple-200 dark:border-purple-800">
-                                <h4 class="text-purple-600 dark:text-purple-400 font-semibold mb-3">数据保护</h4>
-                                <div class="space-y-1 text-sm">
-                                    <div>• GDPR合规</div>
-                                    <div>• 个人数据本地化存储</div>
-                                    <div>• 安全漏洞响应计划</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="text-center py-8 mt-12 text-gray-500 dark:text-gray-600 border-t border-gray-200 dark:border-gray-800">
-        <p>&copy; 2025 Asiatensor. All Rights Reserved. Confidential and Proprietary.</p>
-    </footer>
-
-    <script src="./assets/script.js"></script>
-
+        // ==========================================
+        // APPLICATION INITIALIZATION
+        // ==========================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            new ThemeManager();
+            new LanguageManager();
+            new MobileMenuManager();
+            new ScrollspyManager();
+            new PrintManager();
+            new ChartModalManager();
+            
+            console.log('Pure Aesthetic Skeleton initialized successfully');
+        });
+    </script>
 </body>
 </html>
